@@ -24,3 +24,4 @@ z:\pro\mg\Asteroids\Asteroids\obj\Debug\net8.0\refint\Asteroids.dll
 z:\pro\mg\Asteroids\Asteroids\obj\Debug\net8.0\Asteroids.pdb
 z:\pro\mg\Asteroids\Asteroids\obj\Debug\net8.0\Asteroids.genruntimeconfig.cache
 z:\pro\mg\Asteroids\Asteroids\obj\Debug\net8.0\ref\Asteroids.dll
+Z:\pro\mg\Asteroids\Asteroids\bin\Debug\net8.0\Content\spaceship.xnb

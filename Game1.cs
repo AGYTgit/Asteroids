@@ -5,7 +5,8 @@ using Microsoft.Xna.Framework.Input;
 namespace Asteroids;
 
 public class Asteroids : Game
-{
+{   
+    Texture2D ss;
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
 
@@ -27,6 +28,8 @@ public class Asteroids : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+        ss = Content.Load<Texture2D>("spaceship");
+
         // TODO: use this.Content to load your game content here
     }
 
@@ -46,6 +49,10 @@ public class Asteroids : Game
         GraphicsDevice.Clear(Color.Black);
 
         // TODO: Add your drawing code here
+
+        _spriteBatch.Begin();
+        _spriteBatch.Draw(ss, new Vector2(0, 0), Color.White);
+        _spriteBatch.End();
 
         base.Draw(gameTime);
     }
