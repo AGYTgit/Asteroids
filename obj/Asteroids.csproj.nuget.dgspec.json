@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "z:\\pro\\mg\\Asteroids\\Asteroids\\Asteroids.csproj": {}
+    "Z:\\pro\\mg\\Asteroids\\Asteroids\\Asteroids.csproj": {}
   },
   "projects": {
-    "z:\\pro\\mg\\Asteroids\\Asteroids\\Asteroids.csproj": {
+    "Z:\\pro\\mg\\Asteroids\\Asteroids\\Asteroids.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "z:\\pro\\mg\\Asteroids\\Asteroids\\Asteroids.csproj",
+        "projectUniqueName": "Z:\\pro\\mg\\Asteroids\\Asteroids\\Asteroids.csproj",
         "projectName": "Asteroids",
-        "projectPath": "z:\\pro\\mg\\Asteroids\\Asteroids\\Asteroids.csproj",
+        "projectPath": "Z:\\pro\\mg\\Asteroids\\Asteroids\\Asteroids.csproj",
         "packagesPath": "C:\\Users\\borbelyn21\\.nuget\\packages\\",
-        "outputPath": "z:\\pro\\mg\\Asteroids\\Asteroids\\obj\\",
+        "outputPath": "Z:\\pro\\mg\\Asteroids\\Asteroids\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\borbelyn21\\AppData\\Roaming\\NuGet\\NuGet.Config"
