@@ -8,7 +8,9 @@ public class Asteroids : Game
 {   
     Texture2D ss_sprite;
     Vector2 ss_position;
-    float ss_speed;
+    float ss_rotation;
+    float ss_speed_forward;
+    float ss_speed_other;
 
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
@@ -27,7 +29,8 @@ public class Asteroids : Game
         ss_position = new Vector2(_graphics.PreferredBackBufferWidth / 2,
                                     _graphics.PreferredBackBufferHeight / 2);
 
-        ss_speed = 100f;
+        ss_speed_forward = 100f;
+        ss_speed_other = 50f;
 
         base.Initialize();
     }
@@ -49,28 +52,32 @@ public class Asteroids : Game
 
         // TODO: Add your update logic here
 
-        float updatedBallSpeed = ss_speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        float updated_ss_speed_forward = ss_speed_forward * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        float updated_ss_speed_other = ss_speed_other * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
         var kstate = Keyboard.GetState();
         
         if (kstate.IsKeyDown(Keys.Up))
         {
-            ss_position.Y -= updatedBallSpeed;
-        }
-        
-        if (kstate.IsKeyDown(Keys.Down))
-        {
-            ss_position.Y += updatedBallSpeed;
+            ss_position.Y -= updated_ss_speed_forward;
         }
         
         if (kstate.IsKeyDown(Keys.Left))
         {
-            ss_position.X -= updatedBallSpeed;
+            ss_position.X -= updated_ss_speed_other;
         }
         
         if (kstate.IsKeyDown(Keys.Right))
         {
-            ss_position.X += updatedBallSpeed;
+            ss_position.X += updated_ss_speed_other;
+        }
+
+        if (kstate.IsKeyDown(Keys.S)) {
+            ss_rotation -= .05f;
+        }
+
+        if (kstate.IsKeyDown(Keys.F)) {
+            ss_rotation += .05f;
         }
 
         base.Update(gameTime);
@@ -88,7 +95,7 @@ public class Asteroids : Game
             ss_position,
             null,
             Color.White,
-            0f,
+            ss_rotation,
             new Vector2(ss_sprite.Width / 2, ss_sprite.Height / 2),
             Vector2.One,
             SpriteEffects.None,
