@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace Asteroids;
 
@@ -57,27 +58,34 @@ public class Asteroids : Game
 
         var kstate = Keyboard.GetState();
         
-        if (kstate.IsKeyDown(Keys.Up))
+        if (kstate.IsKeyDown(Keys.E))
         {
-            ss_position.Y -= updated_ss_speed_forward;
+            ss_position.Y -= updated_ss_speed_forward * (float)Math.Cos(ss_rotation);
+            ss_position.X += updated_ss_speed_forward * (float)Math.Sin(ss_rotation);
         }
         
-        if (kstate.IsKeyDown(Keys.Left))
+        if (kstate.IsKeyDown(Keys.S))
         {
-            ss_position.X -= updated_ss_speed_other;
+            ss_position.Y -= updated_ss_speed_other * (float)Math.Sin(ss_rotation);
+            ss_position.X -= updated_ss_speed_other * (float)Math.Cos(ss_rotation);
         }
         
-        if (kstate.IsKeyDown(Keys.Right))
+        if (kstate.IsKeyDown(Keys.F))
         {
-            ss_position.X += updated_ss_speed_other;
+            ss_position.Y += updated_ss_speed_other * (float)Math.Sin(ss_rotation);
+            ss_position.X += updated_ss_speed_other * (float)Math.Cos(ss_rotation);
         }
 
-        if (kstate.IsKeyDown(Keys.S)) {
+        if (kstate.IsKeyDown(Keys.W)) {
             ss_rotation -= .05f;
         }
 
-        if (kstate.IsKeyDown(Keys.F)) {
+        if (kstate.IsKeyDown(Keys.R)) {
             ss_rotation += .05f;
+        }
+
+        if (kstate.IsKeyDown(Keys.Space)) {
+            ss_position = new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2) - new Vector2(ss_sprite.Width / 2, ss_sprite.Height / 2);
         }
 
         base.Update(gameTime);

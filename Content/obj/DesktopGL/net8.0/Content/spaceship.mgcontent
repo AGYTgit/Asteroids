@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>Z:/pro/mg/Asteroids/Asteroids/Content/spaceship.png</SourceFile>
-  <SourceTime>2024-10-04T13:09:45.7309503+02:00</SourceTime>
-  <DestFile>Z:/pro/mg/Asteroids/Asteroids/Content/bin/DesktopGL/Content/spaceship.xnb</DestFile>
-  <DestTime>2024-10-04T13:30:52.1802057+02:00</DestTime>
+  <SourceFile>C:/Users/bubon/OneDrive/Documents/GitHub/Automatic Uploading/Asteroids/Content/spaceship.png</SourceFile>
+  <SourceTime>2024-10-04T17:24:47.0313249+02:00</SourceTime>
+  <DestFile>C:/Users/bubon/OneDrive/Documents/GitHub/Automatic Uploading/Asteroids/Content/bin/DesktopGL/Content/spaceship.xnb</DestFile>
+  <DestTime>2024-10-04T17:25:11.9043615+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2024-08-16T19:05:56+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
