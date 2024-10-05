@@ -45,6 +45,7 @@ public class Asteroids : Game {
         public Vector2 position;
         public Vector2 origin;
 
+        public Vector2 direction;
         public float speed;
         public float speed_multiplier;
         public float velocity;
@@ -113,10 +114,19 @@ public class Asteroids : Game {
 
         for (int i = asteroid_list.Count - 1; i >= 0; i--) {
             asteroid_list[i].velocity = asteroid_list[i].speed * asteroid_list[i].speed_multiplier * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            asteroid_list[i].position += new Vector2(asteroid_list[i].velocity, asteroid_list[i].velocity);
+            asteroid_list[i].position += new Vector2(asteroid_list[i].velocity * asteroid_list[i].direction.X, asteroid_list[i].velocity * asteroid_list[i].direction.Y);
 
             if (is_collision(spaceship, asteroid_list[i])) {
                 spaceship.position = new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2) - new Vector2(spaceship.sprite.Width / 2, spaceship.sprite.Height / 2);
+                asteroid_list.RemoveAt(i);
+            }
+
+            if (
+                asteroid_list[i].position.X < 0 ||
+                asteroid_list[i].position.X > _graphics.PreferredBackBufferWidth ||
+                asteroid_list[i].position.Y < 0 ||
+                asteroid_list[i].position.Y > _graphics.PreferredBackBufferHeight
+                ) {
                 asteroid_list.RemoveAt(i);
             }
         }
@@ -213,15 +223,20 @@ public class Asteroids : Game {
     }
 
     private void create_asteroid() {
+        Random random = new Random();
         Texture2D sprite_temp = Content.Load<Texture2D>("asteroid_1_1");
         Asteroid asteroid = new() {
             sprite = sprite_temp,
 
-            position = new Vector2(0, 0),
+            position = new Vector2(
+                random.Next(0, GraphicsDevice.Viewport.Width),
+                random.Next(0, GraphicsDevice.Viewport.Height)
+            ),
 
             origin = new Vector2(sprite_temp.Width / 2, sprite_temp.Height / 2),
 
-            speed = 50f,
+            direction = new Vector2(random.Next(-1,2), random.Next(-1,2)),
+            speed = random.Next(10,51),
             speed_multiplier = 1f,
             velocity = 0f,
 
