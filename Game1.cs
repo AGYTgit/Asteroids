@@ -2,8 +2,11 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Reflection.Metadata;
 using System.Runtime.Intrinsics.X86;
+using System.Security.Cryptography;
 
 namespace Asteroids;
 
@@ -21,6 +24,7 @@ public class Asteroids : Game {
     public class Spaceship {
         public Texture2D sprite;
         public Vector2 position;
+        public Vector2 origin;
 
         public float speed_forward;
         public float speed_forward_multiplier;
@@ -39,6 +43,7 @@ public class Asteroids : Game {
     public class Asteroid {
         public Texture2D sprite;
         public Vector2 position;
+        public Vector2 origin;
 
         public float speed;
         public float speed_multiplier;
@@ -47,36 +52,21 @@ public class Asteroids : Game {
         public float rotation;
         public float rotate_speed;
         public float rotate_speed_multiplier;
-        public bool exists;
     }
-    readonly Asteroid asteroid = new();
+    readonly List<Asteroid> asteroid_list = [];
 
     protected override void Initialize() {
-        spaceship.position = new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2);
-        spaceship.rotation = 0f;
-        spaceship.speed_forward = 100f;
-        spaceship.speed_forward_multiplier = 1f;
-        spaceship.speed_other = 50f;
-        spaceship.speed_other_multiplier = 1f;
-        spaceship.rotate_speed = .02f;
-        spaceship.rotate_speed_multiplier = 1f;
-
-        asteroid.position = new Vector2(0,0);
-        asteroid.rotation = 0;
-        asteroid.speed = 50f;
-        asteroid.speed_multiplier = 1f;
-        asteroid.rotate_speed = .015f;
-        asteroid.rotate_speed_multiplier = 1f;
+        init_spaceship();
 
         base.Initialize();
     }
 
     protected override void LoadContent() {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-        spaceship.sprite = Content.Load<Texture2D>("spaceship");
-        asteroid.sprite = Content.Load<Texture2D>("asteroid_1_1");
     }
+
+    bool w_down = false;
+    bool q_down = false;
 
     protected override void Update(GameTime gameTime) {
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)) {
@@ -107,16 +97,28 @@ public class Asteroids : Game {
             spaceship.position = new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2) - new Vector2(spaceship.sprite.Width / 2, spaceship.sprite.Height / 2);
         }
 
-        if (kstate.IsKeyDown(Keys.W)) {
-            asteroid.exists = true;
-            asteroid.position = new Vector2(0,0);
+        if (kstate.IsKeyDown(Keys.W) && w_down == false) {
+            w_down = true;
+            create_asteroid();
+        } else if (!kstate.IsKeyDown(Keys.W) && w_down == true) {
+            w_down = false;
         }
-        if (kstate.IsKeyDown(Keys.Q)) {
-            asteroid.exists = false;
+
+        if (kstate.IsKeyDown(Keys.Q) && q_down == false) {
+            q_down = true;
+            destroy_asteroid();
+        } else if (!kstate.IsKeyDown(Keys.Q) && q_down == true) {
+            q_down = false;
         }
-        if (asteroid.exists) {
-            asteroid.velocity = asteroid.speed * asteroid.speed_multiplier * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            asteroid.position += new Vector2(asteroid.velocity, asteroid.velocity);
+
+        for (int i = asteroid_list.Count - 1; i >= 0; i--) {
+            asteroid_list[i].velocity = asteroid_list[i].speed * asteroid_list[i].speed_multiplier * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            asteroid_list[i].position += new Vector2(asteroid_list[i].velocity, asteroid_list[i].velocity);
+
+            if (is_collision(spaceship, asteroid_list[i])) {
+                spaceship.position = new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2) - new Vector2(spaceship.sprite.Width / 2, spaceship.sprite.Height / 2);
+                asteroid_list.RemoveAt(i);
+            }
         }
 
         if (kstate.IsKeyDown(Keys.Space)) {
@@ -172,7 +174,7 @@ public class Asteroids : Game {
             SpriteEffects.None,
             0f
         );
-        if (asteroid.exists) {
+        foreach (Asteroid asteroid in asteroid_list) {
             _spriteBatch.Draw(
                 asteroid.sprite,
                 asteroid.position,
@@ -188,5 +190,58 @@ public class Asteroids : Game {
         _spriteBatch.End();
 
         base.Draw(gameTime);
+    }
+
+    private void init_spaceship() {
+        spaceship.sprite = Content.Load<Texture2D>("spaceship");
+
+        spaceship.position = new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2);
+
+        spaceship.origin = new Vector2(spaceship.sprite.Width / 2, spaceship.sprite.Height / 2);
+
+        spaceship.speed_forward = 100f;
+        spaceship.speed_forward_multiplier = 1f;
+        spaceship.velocity_forward = 0f;
+
+        spaceship.speed_other = 50f;
+        spaceship.speed_other_multiplier = 1f;
+        spaceship.velocity_other = 0f;
+        
+        spaceship.rotation = 0f;
+        spaceship.rotate_speed = .02f;
+        spaceship.rotate_speed_multiplier = 1f;
+    }
+
+    private void create_asteroid() {
+        Texture2D sprite_temp = Content.Load<Texture2D>("asteroid_1_1");
+        Asteroid asteroid = new() {
+            sprite = sprite_temp,
+
+            position = new Vector2(0, 0),
+
+            origin = new Vector2(sprite_temp.Width / 2, sprite_temp.Height / 2),
+
+            speed = 50f,
+            speed_multiplier = 1f,
+            velocity = 0f,
+
+            rotation = 0,
+            rotate_speed = .015f,
+            rotate_speed_multiplier = 1f
+        };
+        asteroid_list.Add(asteroid);
+    }
+
+    private void destroy_asteroid() {
+        if (asteroid_list.Count > 0) {
+            asteroid_list.RemoveAt(asteroid_list.Count - 1);
+        }
+    }
+
+    private static bool is_collision(Spaceship spaceship, Asteroid asteroid) {
+        float distance = Vector2.Distance(spaceship.position, asteroid.position);
+        float spaceship_radius = spaceship.sprite.Width / 2;
+        float asteroid_radius = asteroid.sprite.Width / 2;
+        return distance < (spaceship_radius + asteroid_radius);
     }
 }
