@@ -1,2 +1,4 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"C:/Users/bubon/OneDrive/Documents/GitHub/Automatic Uploading/Asteroids/Content/asteroid_1_1.png","C:/Users/bubon/OneDrive/Documents/GitHub/Automatic Uploading/Asteroids/Content/bin/DesktopGL/Content/asteroid_1_1.xnb","TextureProcessor","Texture2DContent",3942,5205,0.1076794
+"C:/Users/bubon/OneDrive/Documents/GitHub/Automatic Uploading/Asteroids/Content/asteroid_1_2.png","C:/Users/bubon/OneDrive/Documents/GitHub/Automatic Uploading/Asteroids/Content/bin/DesktopGL/Content/asteroid_1_2.xnb","TextureProcessor","Texture2DContent",6316,20309,0.0035614
 "C:/Users/bubon/OneDrive/Documents/GitHub/Automatic Uploading/Asteroids/Content/spaceship.png","C:/Users/bubon/OneDrive/Documents/GitHub/Automatic Uploading/Asteroids/Content/bin/DesktopGL/Content/spaceship.xnb","TextureProcessor","Texture2DContent",617,4181,0.1621761
