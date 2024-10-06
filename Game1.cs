@@ -105,14 +105,14 @@ public class Asteroids : Game {
 
 
         if (kstate.IsKeyDown(Keys.W) && w_down == false) {
-            w_down = true;
+            // w_down = true;
             create_asteroid();
         } else if (!kstate.IsKeyDown(Keys.W) && w_down == true) {
             w_down = false;
         }
 
         if (kstate.IsKeyDown(Keys.Q) && q_down == false) {
-            q_down = true;
+            // q_down = true;
             destroy_asteroid();
         } else if (!kstate.IsKeyDown(Keys.Q) && q_down == true) {
             q_down = false;
@@ -120,26 +120,45 @@ public class Asteroids : Game {
 
 
 
+        List<int> to_remove = [];
         for (int i = asteroid_list.Count - 1; i >= 0; i--) {
             asteroid_list[i].velocity = new Vector2(
                 asteroid_list[i].speed * asteroid_list[i].speed_multiplier * (float)gameTime.ElapsedGameTime.TotalSeconds * asteroid_list[i].direction.X,
                 asteroid_list[i].speed * asteroid_list[i].speed_multiplier * (float)gameTime.ElapsedGameTime.TotalSeconds * asteroid_list[i].direction.Y
             );
             asteroid_list[i].position += asteroid_list[i].velocity;
+            asteroid_list[i].rotation += (float)(asteroid_list[i].rotate_speed * asteroid_list[i].rotate_speed_multiplier / 360 * Math.PI * 2) * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (is_collision(spaceship, asteroid_list[i])) {
                 // spaceship.position = new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2) - new Vector2(spaceship.sprite.Width / 2, spaceship.sprite.Height / 2);
-                asteroid_list.RemoveAt(i);
-                i--;
+                to_remove.Add(i);
                 continue;
             } else if (
                 asteroid_list[i].position.X < 0 || asteroid_list[i].position.X > _graphics.PreferredBackBufferWidth ||
                 asteroid_list[i].position.Y < 0 || asteroid_list[i].position.Y > _graphics.PreferredBackBufferHeight
                 ) {
-                asteroid_list.RemoveAt(i);
-                i--;
+                to_remove.Add(i);
                 continue;
             }
+            for (int j = i - 1; j >= 0; j--) {
+                if (is_collision(asteroid_list[i], asteroid_list[j])) {
+                    if (asteroid_list[i].speed > asteroid_list[j].speed) {
+                        to_remove.Add(j);
+                        break;
+                    } else if (asteroid_list[i].speed < asteroid_list[j].speed) {
+                        to_remove.Add(i);
+                        break;
+                    }
+                    
+                    to_remove.Add(j);
+                    to_remove.Add(i);
+                    break;
+                }
+            }
+        }
+
+        foreach (int index in to_remove) {
+            asteroid_list.RemoveAt(index);
         }
 
 
@@ -244,7 +263,7 @@ public class Asteroids : Game {
             velocity = new Vector2(0,0),
 
             rotation = random.Next(0, (int)(Math.PI * 2 * 1000)) / 1000,
-            rotate_speed = .015f,
+            rotate_speed = random.Next(60) * 2 - 60,
             rotate_speed_multiplier = 1f
         };
         asteroid_list.Add(asteroid);
@@ -257,10 +276,10 @@ public class Asteroids : Game {
         }
     }
 
-    private static bool is_collision(Entity e1, Entity e2) {
+    private static bool is_collision(Entity e1, Entity e2, float tolerance=10f) {
         float distance = Vector2.Distance(e1.position, e2.position);
-        float e1_radius = e1.sprite.Width / 2;
-        float e2_radius = e2.sprite.Width / 2;
+        float e1_radius = e1.sprite.Width / 2 * (1 - tolerance / 100);
+        float e2_radius = e2.sprite.Width / 2 * (1 - tolerance / 100);;
         return distance < (e1_radius + e2_radius);
     }
 
