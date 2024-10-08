@@ -181,10 +181,20 @@ public class Asteroids : Game {
         }
 
 
+        float rotate_amount = spaceship.rotate_speed * spaceship.rotate_speed_multiplier * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
         if (angle_diff > 0) {
-            spaceship.rotation += spaceship.rotate_speed * spaceship.rotate_speed_multiplier;
+            if (Math.Abs(angle_diff) < rotate_amount) {
+                spaceship.rotation += angle_diff;
+            } else {
+                spaceship.rotation += rotate_amount;
+            }
         } else if (angle_diff < 0) {
-            spaceship.rotation -= spaceship.rotate_speed * spaceship.rotate_speed_multiplier;
+            if (Math.Abs(angle_diff) < rotate_amount) {
+                spaceship.rotation -= angle_diff;
+            } else {
+                spaceship.rotation -= rotate_amount;
+            }
         }
 
         base.Update(gameTime);
@@ -237,7 +247,7 @@ public class Asteroids : Game {
         spaceship.secondary_velocity = new Vector2(0,0);
         
         spaceship.rotation = 0f;
-        spaceship.rotate_speed = .02f;
+        spaceship.rotate_speed = 2f;
         spaceship.rotate_speed_multiplier = 1f;
     }
 
