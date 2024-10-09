@@ -4,11 +4,15 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>Z:/pro/mg/Asteroids/Asteroids/Content/asteroid_1_1.png</File>
-    <File>Z:/pro/mg/Asteroids/Asteroids/Content/asteroid_1_2.png</File>
-    <File>Z:/pro/mg/Asteroids/Asteroids/Content/spaceship.png</File>
+    <File>C:/Users/bubon/OneDrive/Documents/GitHub/Automatic Uploading/Asteroids/Content/asteroid_1_1.png</File>
+    <File>C:/Users/bubon/OneDrive/Documents/GitHub/Automatic Uploading/Asteroids/Content/asteroid_1_2.png</File>
+    <File>C:/Users/bubon/OneDrive/Documents/GitHub/Automatic Uploading/Asteroids/Content/shot_1_1.png</File>
+    <File>C:/Users/bubon/OneDrive/Documents/GitHub/Automatic Uploading/Asteroids/Content/shot_1_2.png</File>
+    <File>C:/Users/bubon/OneDrive/Documents/GitHub/Automatic Uploading/Asteroids/Content/spaceship.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

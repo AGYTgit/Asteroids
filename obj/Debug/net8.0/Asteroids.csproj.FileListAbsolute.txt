@@ -56,3 +56,5 @@ C:\Users\bubon\OneDrive\Documents\GitHub\Automatic Uploading\Asteroids\bin\Debug
 C:\Users\bubon\OneDrive\Documents\GitHub\Automatic Uploading\Asteroids\bin\Debug\net8.0\Content\asteroid_1_2.xnb
 Z:\pro\mg\Asteroids\Asteroids\bin\Debug\net8.0\Content\asteroid_1_1.xnb
 Z:\pro\mg\Asteroids\Asteroids\bin\Debug\net8.0\Content\asteroid_1_2.xnb
+C:\Users\bubon\OneDrive\Documents\GitHub\Automatic Uploading\Asteroids\bin\Debug\net8.0\Content\shot_1_2.xnb
+C:\Users\bubon\OneDrive\Documents\GitHub\Automatic Uploading\Asteroids\bin\Debug\net8.0\Content\shot_1_1.xnb
