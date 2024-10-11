@@ -3,10 +3,11 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection.Metadata;
-using System.Runtime.Intrinsics.X86;
-using System.Security.Cryptography;
+// using System.IO;
+// using System.Numerics;
+// using System.Reflection.Metadata;
+// using System.Runtime.Intrinsics.X86;
+// using System.Security.Cryptography;
 
 namespace Asteroids;
 
@@ -44,9 +45,7 @@ public class Asteroids : Game {
         public List<int> collision_list;
     }
     readonly Entity spaceship = new();
-
     readonly List<Entity> shots_list = [];
-
     readonly List<Entity> asteroid_list = [];
 
     protected override void Initialize() {
@@ -59,7 +58,7 @@ public class Asteroids : Game {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
     }
 
-    float shoot_cooldown_ms = 0f;
+    float shoot_cooldown_ms = 100f;
     float time_of_last_shoot = 0f;
 
     float spawn_cooldown_ms = 0f;
@@ -68,189 +67,57 @@ public class Asteroids : Game {
     float despawn_cooldown_ms = 0f;
     float time_of_last_despawn = 0f;
 
-long game_time_ms = 0;
+    long game_time_ms = 0;
+
     protected override void Update(GameTime gameTime) {
         game_time_ms += gameTime.ElapsedGameTime.Milliseconds;
 
-        var kstate = Keyboard.GetState();
+        update_from_input(game_time_ms);
 
-        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || kstate.IsKeyDown(Keys.Escape)) {
-            Exit();
+        update_spaceship(gameTime);
+        update_shots(gameTime);
+        update_asteroids(gameTime);
+
+        // ocassional crash when both shot and asteroid exists
+
+        if (true) {
+            List<int> to_remove = validate_shots_position();
+            remove_at_indices(shots_list, to_remove);
         }
 
-        spaceship.velocity = new Vector2(
-            spaceship.speed * spaceship.speed_multiplier * (float)gameTime.ElapsedGameTime.TotalSeconds * (float)Math.Sin(spaceship.rotation),
-            -1 * spaceship.speed * spaceship.speed_multiplier * (float)gameTime.ElapsedGameTime.TotalSeconds * (float)Math.Cos(spaceship.rotation)
-        );
-        spaceship.secondary_velocity = new Vector2(
-            spaceship.secondary_speed * spaceship.secondary_speed_multiplier * (float)gameTime.ElapsedGameTime.TotalSeconds * (float)Math.Cos(spaceship.rotation),
-            spaceship.secondary_speed * spaceship.secondary_speed_multiplier * (float)gameTime.ElapsedGameTime.TotalSeconds * (float)Math.Sin(spaceship.rotation)
-        );
-        
-        if (kstate.IsKeyDown(Keys.E)) {
-            spaceship.position += spaceship.velocity;
-        }
-        
-        if (kstate.IsKeyDown(Keys.S)) {
-            spaceship.position -= spaceship.secondary_velocity;
-        }
-        
-        if (kstate.IsKeyDown(Keys.F)) {
-            spaceship.position += spaceship.secondary_velocity;
+        // if (true) { // crash when both shot and asteroid exists
+        //     List<int> to_remove = validate_asteroids_position();
+        //     remove_at_indices(shots_list, to_remove);
+        // }
+
+        if (true) {
+            List<int> to_remove = check_for_shots_shots_collision();
+            remove_at_indices(shots_list, to_remove);
         }
 
-        if (kstate.IsKeyDown(Keys.R)) {
-            spaceship.position = new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2) - new Vector2(spaceship.sprite.Width / 2, spaceship.sprite.Height / 2);
-        }
-
-        if (kstate.IsKeyDown(Keys.Space)) {
-            spaceship.speed_multiplier = 8f;
-            spaceship.secondary_speed_multiplier = 4f;
-            spaceship.rotate_speed_multiplier = 4f;
-        } else {
-            spaceship.speed_multiplier = 1f;
-            spaceship.secondary_speed_multiplier = 1f;
-            spaceship.rotate_speed_multiplier = 1f;
-        }
-
-        if (kstate.IsKeyDown(Keys.G) && time_of_last_shoot < game_time_ms - shoot_cooldown_ms) {
-            time_of_last_shoot = game_time_ms;
-            shoot();
-        }
-
-        
-        for (int i = 0; i < shots_list.Count; i++) {
-            shots_list[i].velocity = new Vector2(
-                shots_list[i].speed * shots_list[i].speed_multiplier * (float)gameTime.ElapsedGameTime.TotalSeconds * (float)Math.Sin(shots_list[i].rotation),
-                -1 * shots_list[i].speed * shots_list[i].speed_multiplier * (float)gameTime.ElapsedGameTime.TotalSeconds * (float)Math.Cos(shots_list[i].rotation)
-            );
-
-            shots_list[i].position += shots_list[i].velocity;
-        }
-
-        List<int> shots_to_remove = [];
-        List<int> asteroids_to_remove = [];
-        for (int i = shots_list.Count - 1; i >= 0; i--) {
-            if (
-                shots_list[i].position.X < 0 || shots_list[i].position.X > _graphics.PreferredBackBufferWidth ||
-                shots_list[i].position.Y < 0 || shots_list[i].position.Y > _graphics.PreferredBackBufferHeight
-                ) {
-                shots_to_remove.Add(i);
-                continue;
-            }
-            for (int j = asteroid_list.Count - 1; j >= 0; j--) {
-                if (is_collision(shots_list[i], asteroid_list[j])) {
-                    shots_to_remove.Add(i);
-                    asteroids_to_remove.Add(j);
-                    break;
+        if (true) {
+            List<List<int>> to_remove = check_for_shots_asteroids_collision();
+            if (to_remove.Count > 0) {
+                if (to_remove[0].Count > 0) {
+                    remove_at_indices(shots_list, to_remove[0]);
+                }
+                if (to_remove[1].Count > 0) {
+                    remove_at_indices(asteroid_list, to_remove[1]);
                 }
             }
         }
 
-        shots_to_remove.Sort((a, b) => b.CompareTo(a));
-        foreach (int index in shots_to_remove) {
-            if (index < shots_list.Count) {
-                shots_list.RemoveAt(index);
-            }
-        }
-
-        asteroids_to_remove.Sort((a, b) => b.CompareTo(a));
-        foreach (int index in asteroids_to_remove) {
-            if (index < asteroid_list.Count) {
-                asteroid_list.RemoveAt(index);
-            }
-        }
-
-
-        if (kstate.IsKeyDown(Keys.W) && time_of_last_spawn < game_time_ms - spawn_cooldown_ms) {
-            time_of_last_spawn = game_time_ms;
-            create_asteroid();
-        }
-
-        if (kstate.IsKeyDown(Keys.Q) && time_of_last_despawn < game_time_ms - despawn_cooldown_ms) {
-            time_of_last_despawn = game_time_ms;
-            destroy_asteroid();
-        }
-
-
-        asteroids_to_remove = [];
-        for (int i = asteroid_list.Count - 1; i >= 0; i--) {
-            asteroid_list[i].velocity = new Vector2(
-                asteroid_list[i].speed * asteroid_list[i].speed_multiplier * (float)gameTime.ElapsedGameTime.TotalSeconds * asteroid_list[i].direction.X,
-                asteroid_list[i].speed * asteroid_list[i].speed_multiplier * (float)gameTime.ElapsedGameTime.TotalSeconds * asteroid_list[i].direction.Y
-            );
-            asteroid_list[i].position += asteroid_list[i].velocity;
-            asteroid_list[i].rotation += (float)(asteroid_list[i].rotate_speed * asteroid_list[i].rotate_speed_multiplier / 360 * Math.PI * 2) * (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            if (is_collision(spaceship, asteroid_list[i])) {
-                // spaceship.position = new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2) - new Vector2(spaceship.sprite.Width / 2, spaceship.sprite.Height / 2);
-                asteroids_to_remove.Add(i);
-                continue;
-            } else if (
-                asteroid_list[i].position.X < 0 || asteroid_list[i].position.X > _graphics.PreferredBackBufferWidth ||
-                asteroid_list[i].position.Y < 0 || asteroid_list[i].position.Y > _graphics.PreferredBackBufferHeight
-                ) {
-                asteroids_to_remove.Add(i);
-                continue;
-            }
-            // for (int j = i - 1; j >= 0; j--) {
-            //     if (is_collision(asteroid_list[i], asteroid_list[j])) {
-            //         if (asteroid_list[i].speed > asteroid_list[j].speed) {
-            //             asteroids_to_remove.Add(j);
-            //             break;
-            //         } else if (asteroid_list[i].speed < asteroid_list[j].speed) {
-            //             asteroids_to_remove.Add(i);
-            //             break;
-            //         }
-                    
-            //         asteroids_to_remove.Add(j);
-            //         asteroids_to_remove.Add(i);
-            //         break;
-            //     }
+        if (true) {
+            List<int> to_remove = check_for_spaceship_asteroids_collision();
+            // if (to_remove.Count > 0) {
+            //     spaceship.position = new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2) - new Vector2(spaceship.sprite.Width / 2, spaceship.sprite.Height / 2);
             // }
+            remove_at_indices(asteroid_list, to_remove);
         }
 
-        asteroids_to_remove.Sort((a, b) => b.CompareTo(a));
-        foreach (int index in asteroids_to_remove) {
-            if (index < asteroid_list.Count) {
-                asteroid_list.RemoveAt(index);
-            }
-        }
-
-
-
-        Vector2 mouse_position = new Vector2(Mouse.GetState().Position.X, Mouse.GetState().Position.Y);
-
-        Vector2 direction = mouse_position - spaceship.position;
-        float target_angle = MathF.Atan2(direction.Y, direction.X);
-
-        spaceship.rotation = (spaceship.rotation + (float)(Math.PI * 2)) % (float)(Math.PI * 2);
-
-        float angle_diff = target_angle + (float)(Math.PI / 2) - spaceship.rotation;
-
-
-        if (angle_diff > MathF.PI) {
-            angle_diff -= 2 * MathF.PI;
-        }
-        else if (angle_diff < -MathF.PI) {
-            angle_diff += 2 * MathF.PI;
-        }
-
-
-        float rotate_amount = spaceship.rotate_speed * spaceship.rotate_speed_multiplier * (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-        if (angle_diff > 0) {
-            if (angle_diff < rotate_amount) {
-                spaceship.rotation += angle_diff;
-            } else {
-                spaceship.rotation += rotate_amount;
-            }
-        } else if (angle_diff < 0) {
-            if (0 - angle_diff < rotate_amount) {
-                spaceship.rotation += angle_diff;
-            } else {
-                spaceship.rotation -= rotate_amount;
-            }
+        if (true) {
+            List<int> to_remove = check_for_asteroids_asteroids_collision();
+            remove_at_indices(asteroid_list, to_remove);
         }
 
         base.Update(gameTime);
@@ -302,6 +169,7 @@ long game_time_ms = 0;
         base.Draw(gameTime);
     }
 
+
     private void init_spaceship() {
         spaceship.sprite = Content.Load<Texture2D>("spaceship");
         spaceship.position = new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2);
@@ -321,6 +189,7 @@ long game_time_ms = 0;
 
         spaceship.collision_list = [1];
     }
+
 
     private void create_asteroid() {
         Random random = new Random();
@@ -359,19 +228,7 @@ long game_time_ms = 0;
         }
     }
 
-    private static bool is_collision(Entity e1, Entity e2, float tolerance=10f) {
-        // foreach (int c in e1.collision_list) {
-        //     if (e2.collision_list.Contains(c)) {
-                float distance = Vector2.Distance(e1.position, e2.position);
-                float e1_radius = e1.sprite.Width / 2 * (1 - tolerance / 100);
-                float e2_radius = e2.sprite.Width / 2 * (1 - tolerance / 100);;
-                return distance < (e1_radius + e2_radius);
-        //     }
-        // }
-        // return false;
-    }
-
-    private void shoot() {
+    private void shoot(short mode=0) {
         Vector2 shot_position_offset = new(
             -13f * (float)Math.Cos(spaceship.rotation),
             -10f * (float)Math.Sin(spaceship.rotation)
@@ -383,37 +240,286 @@ long game_time_ms = 0;
         float angle_diff = target_angle + (float)(Math.PI / 2) - spaceship.rotation;
 
         Texture2D sprite_temp = Content.Load<Texture2D>("shot_1_1");
-        Entity shot = new() {
-            sprite = sprite_temp,
-            origin = new Vector2(sprite_temp.Width / 2, sprite_temp.Height / 2),
-            position = spaceship.position + shot_position_offset,
 
-            speed = 250,
-            speed_multiplier = 1f,
-            velocity = new Vector2(0,0),
+        if (mode == 0 || mode == 2) {
+            Entity shot = new() {
+                sprite = sprite_temp,
+                origin = new Vector2(sprite_temp.Width / 2, sprite_temp.Height / 2),
+                position = spaceship.position + shot_position_offset,
 
-            rotation = spaceship.rotation - angle_diff,
-            rotate_speed = 0f,
-            rotate_speed_multiplier = 0f,
+                speed = 250,
+                speed_multiplier = 1f,
+                velocity = new Vector2(0,0),
 
-            collision_list = [2],
-        };
-        shots_list.Add(shot);
-        Entity shot2 = new() {
-            sprite = sprite_temp,
-            origin = new Vector2(sprite_temp.Width / 2, sprite_temp.Height / 2),
-            position = spaceship.position - shot_position_offset,
+                rotation = spaceship.rotation - angle_diff,
+                rotate_speed = 0f,
+                rotate_speed_multiplier = 0f,
 
-            speed = 250,
-            speed_multiplier = 1f,
-            velocity = new Vector2(0,0),
+                collision_list = [2],
+            };
+            shots_list.Add(shot);
+        }
+        if (mode == 1 || mode == 2) {
+            Entity shot = new() {
+                sprite = sprite_temp,
+                origin = new Vector2(sprite_temp.Width / 2, sprite_temp.Height / 2),
+                position = spaceship.position - shot_position_offset,
 
-            rotation = spaceship.rotation + angle_diff,
-            rotate_speed = 0f,
-            rotate_speed_multiplier = 0f,
+                speed = 250,
+                speed_multiplier = 1f,
+                velocity = new Vector2(0,0),
 
-            collision_list = [2],
-        };
-        shots_list.Add(shot2);
+                rotation = spaceship.rotation + angle_diff,
+                rotate_speed = 0f,
+                rotate_speed_multiplier = 0f,
+
+                collision_list = [2],
+            };
+            shots_list.Add(shot);
+        }
     }
+
+
+    public bool is_collision(Entity e1, Entity e2, float tolerance=10f) {
+        // foreach (int c in e1.collision_list) {
+        //     if (e2.collision_list.Contains(c)) {
+                float distance = Vector2.Distance(e1.position, e2.position);
+                float e1_radius = e1.sprite.Width / 2 * (1 - tolerance / 100);
+                float e2_radius = e2.sprite.Width / 2 * (1 - tolerance / 100);;
+                return distance < (e1_radius + e2_radius);
+        //     }
+        // }
+        // return false;
+    }
+
+    public void remove_at_indices(List<Entity> entities, List<int> indices) {
+        if (entities.Count == 0) {
+            return;
+        }
+
+        indices.Sort((a, b) => b.CompareTo(a));
+        foreach (int index in indices) {
+            entities.RemoveAt(index);
+        }
+    }
+
+
+    public void update_from_input(long game_time_ms) {
+        var kstate = Keyboard.GetState();
+        var mstate = Mouse.GetState();
+
+        if (kstate.IsKeyDown(Keys.Escape)) {
+            Exit();
+        }
+
+        if ((mstate.LeftButton == ButtonState.Pressed || mstate.RightButton == ButtonState.Pressed) && time_of_last_shoot < game_time_ms - shoot_cooldown_ms) { // shoot
+            if (mstate.LeftButton == ButtonState.Pressed && mstate.RightButton == ButtonState.Pressed) {
+                shoot(2);
+            } else if (mstate.LeftButton == ButtonState.Pressed) {
+                shoot(0);
+            } else if (mstate.RightButton == ButtonState.Pressed) {
+                shoot(1);
+            }
+            time_of_last_shoot = game_time_ms;
+        }
+
+        if (kstate.IsKeyDown(Keys.E)) { // move FORWARD
+            spaceship.position += spaceship.velocity;
+        }
+        if (kstate.IsKeyDown(Keys.S) && !kstate.IsKeyDown(Keys.F)) { // move LEFT
+            spaceship.position -= spaceship.secondary_velocity;
+        } else if (kstate.IsKeyDown(Keys.F) && !kstate.IsKeyDown(Keys.S)) { // move RIGHT
+            spaceship.position += spaceship.secondary_velocity;
+        }
+
+        if (kstate.IsKeyDown(Keys.R)) { // reset spaceship's position
+            spaceship.position = new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2) - new Vector2(spaceship.sprite.Width / 2, spaceship.sprite.Height / 2);
+        }
+
+        if (kstate.IsKeyDown(Keys.Space)) { // speed boost
+            spaceship.speed_multiplier = 8f;
+            spaceship.secondary_speed_multiplier = 4f;
+            spaceship.rotate_speed_multiplier = 4f;
+        } else {
+            spaceship.speed_multiplier = 1f;
+            spaceship.secondary_speed_multiplier = 1f;
+            spaceship.rotate_speed_multiplier = 1f;
+        }
+
+        if (kstate.IsKeyDown(Keys.W) && time_of_last_spawn < game_time_ms - spawn_cooldown_ms) { // spawn asteroids
+            time_of_last_spawn = game_time_ms;
+            create_asteroid();
+        }
+
+        if (kstate.IsKeyDown(Keys.Q) && time_of_last_despawn < game_time_ms - despawn_cooldown_ms) { // despawn asteroids
+            time_of_last_despawn = game_time_ms;
+            destroy_asteroid();
+        }
+    }
+
+
+    public void update_spaceship(GameTime gameTime) {
+        spaceship.velocity = new Vector2(
+            spaceship.speed * spaceship.speed_multiplier * (float)gameTime.ElapsedGameTime.TotalSeconds * (float)Math.Sin(spaceship.rotation),
+            -1 * spaceship.speed * spaceship.speed_multiplier * (float)gameTime.ElapsedGameTime.TotalSeconds * (float)Math.Cos(spaceship.rotation)
+        );
+        spaceship.secondary_velocity = new Vector2(
+            spaceship.secondary_speed * spaceship.secondary_speed_multiplier * (float)gameTime.ElapsedGameTime.TotalSeconds * (float)Math.Cos(spaceship.rotation),
+            spaceship.secondary_speed * spaceship.secondary_speed_multiplier * (float)gameTime.ElapsedGameTime.TotalSeconds * (float)Math.Sin(spaceship.rotation)
+        );
+
+
+        Vector2 mouse_position = new Vector2(Mouse.GetState().Position.X, Mouse.GetState().Position.Y);
+        Vector2 direction = mouse_position - spaceship.position;
+        float target_angle = MathF.Atan2(direction.Y, direction.X);
+
+        spaceship.rotation = (spaceship.rotation + (float)(Math.PI * 2)) % (float)(Math.PI * 2);
+
+        float angle_diff = target_angle + (float)(Math.PI / 2) - spaceship.rotation;
+
+        if (angle_diff == 0f) {
+            return;
+        }
+
+        if (angle_diff > MathF.PI) {
+            angle_diff -= 2 * MathF.PI;
+        }
+        else if (angle_diff < -MathF.PI) {
+            angle_diff += 2 * MathF.PI;
+        }
+
+        float rotate_amount = spaceship.rotate_speed * spaceship.rotate_speed_multiplier * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+        if (angle_diff > 0) {
+            if (angle_diff < rotate_amount) {
+                spaceship.rotation += angle_diff;
+            } else {
+                spaceship.rotation += rotate_amount;
+            }
+        } else if (angle_diff < 0) {
+            if (0 - angle_diff < rotate_amount) {
+                spaceship.rotation += angle_diff;
+            } else {
+                spaceship.rotation -= rotate_amount;
+            }
+        }
+    }
+
+    public void update_shots(GameTime gameTime) {
+        for (int i = 0; i < shots_list.Count; i++) {
+            shots_list[i].velocity = new Vector2(
+                shots_list[i].speed * shots_list[i].speed_multiplier * (float)gameTime.ElapsedGameTime.TotalSeconds * (float)Math.Sin(shots_list[i].rotation),
+                -1 * shots_list[i].speed * shots_list[i].speed_multiplier * (float)gameTime.ElapsedGameTime.TotalSeconds * (float)Math.Cos(shots_list[i].rotation)
+            );
+
+            shots_list[i].position += shots_list[i].velocity;
+        }
+    }
+
+    public void update_asteroids(GameTime gameTime) {
+        for (int i = asteroid_list.Count - 1; i >= 0; i--) {
+            asteroid_list[i].velocity = new Vector2(
+                asteroid_list[i].speed * asteroid_list[i].speed_multiplier * (float)gameTime.ElapsedGameTime.TotalSeconds * asteroid_list[i].direction.X,
+                asteroid_list[i].speed * asteroid_list[i].speed_multiplier * (float)gameTime.ElapsedGameTime.TotalSeconds * asteroid_list[i].direction.Y
+            );
+            asteroid_list[i].position += asteroid_list[i].velocity;
+            asteroid_list[i].rotation += (float)(asteroid_list[i].rotate_speed * asteroid_list[i].rotate_speed_multiplier / 360 * Math.PI * 2) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        }
+    }
+
+
+    public List<int> validate_shots_position() {
+        List<int> to_remove = [];
+        for (int i = shots_list.Count - 1; i >= 0; i--) {
+            if (
+                shots_list[i].position.X < 0 - (shots_list[i].sprite.Width / 2) || shots_list[i].position.X > _graphics.PreferredBackBufferWidth + (shots_list[i].sprite.Width / 2) ||
+                shots_list[i].position.Y < 0 - (shots_list[i].sprite.Height / 2) || shots_list[i].position.Y > _graphics.PreferredBackBufferHeight + (shots_list[i].sprite.Height / 2)
+                ) {
+                to_remove.Add(i);
+            }
+        }
+
+        return to_remove;
+    }
+
+    public List<int> validate_asteroids_position() {
+        List<int> to_remove = [];
+        for (int i = asteroid_list.Count - 1; i >= 0; i--) {
+            if (
+                asteroid_list[i].position.X < 0 - (asteroid_list[i].sprite.Height / 2) || asteroid_list[i].position.X > _graphics.PreferredBackBufferWidth + (asteroid_list[i].sprite.Height / 2) ||
+                asteroid_list[i].position.Y < 0 - (asteroid_list[i].sprite.Height / 2) || asteroid_list[i].position.Y > _graphics.PreferredBackBufferHeight + (asteroid_list[i].sprite.Height / 2)
+                ) {
+                to_remove.Add(i);
+            }
+        }
+
+        return to_remove;
+    }
+
+
+    public List<int> check_for_shots_shots_collision() {
+        HashSet<int> to_remove_set = [];
+        for (int i = shots_list.Count - 1; i >= 0; i--) {
+            for (int j = i - 1; j >= 0; j--) {
+                if (is_collision(shots_list[i], shots_list[j])) {
+                    to_remove_set.Add(i);
+                    to_remove_set.Add(j);
+                    break;
+                }
+            }
+        }
+        
+        return [.. to_remove_set];
+    }
+
+    public List<List<int>> check_for_shots_asteroids_collision() {
+        List<List<int>> to_remove = [[], []];
+        for (int i = shots_list.Count - 1; i >= 0; i--) {
+            for (int j = asteroid_list.Count - 1; j >= 0; j--) {
+                if (is_collision(shots_list[i], asteroid_list[j])) {
+                    to_remove[0].Add(i);
+                    to_remove[1].Add(j);
+                    break;
+                }
+            }
+        }
+
+        return to_remove;
+    }
+
+    public List<int> check_for_spaceship_asteroids_collision() {
+        List<int> to_remove = [];
+        for (int i = asteroid_list.Count - 1; i >= 0; i--) {
+            if (is_collision(spaceship, asteroid_list[i])) {
+                to_remove.Add(i);
+                continue;
+            }
+        }
+
+        return to_remove;
+    }
+
+    public List<int> check_for_asteroids_asteroids_collision() {
+        List<int> to_remove = [];
+        for (int i = asteroid_list.Count - 1; i >= 0; i--) {
+            for (int j = i - 1; j >= 0; j--) {
+                if (is_collision(asteroid_list[i], asteroid_list[j])) {
+                    if (asteroid_list[i].speed > asteroid_list[j].speed) {
+                        to_remove.Add(j);
+                        break;
+                    } else if (asteroid_list[i].speed < asteroid_list[j].speed) {
+                        to_remove.Add(i);
+                        break;
+                    }
+                    
+                    to_remove.Add(j);
+                    to_remove.Add(i);
+                    break;
+                }
+            }
+        }
+
+        return to_remove;
+    }
+
 }
