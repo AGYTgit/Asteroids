@@ -3,11 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-// using System.IO;
-// using System.Numerics;
-// using System.Reflection.Metadata;
-// using System.Runtime.Intrinsics.X86;
-// using System.Security.Cryptography;
 
 namespace Asteroids;
 
@@ -44,8 +39,11 @@ public class Asteroids : Game {
 
         public List<int> collision_list;
     }
+    
+    // readonly static int gun_count = 2;
+    
     readonly Entity spaceship = new();
-    readonly List<Entity> shots_list = [];
+    readonly List<List<Entity>> shots_list = [[], []];
     readonly List<Entity> asteroid_list = [];
 
     protected override void Initialize() {
@@ -81,28 +79,44 @@ public class Asteroids : Game {
         // ocassional crash when both shot and asteroid exists
 
         if (true) {
-            List<int> to_remove = validate_shots_position();
-            remove_at_indices(shots_list, to_remove);
-        }
-
-        // if (true) { // crash when both shot and asteroid exists
-        //     List<int> to_remove = validate_asteroids_position();
-        //     remove_at_indices(shots_list, to_remove);
-        // }
-
-        if (true) {
-            List<int> to_remove = check_for_shots_shots_collision();
-            remove_at_indices(shots_list, to_remove);
+            List<List<int>> to_remove = validate_shots_position();
+            if (to_remove.Count > 0) {
+                for (int i = 0; i < to_remove.Count; i++) {
+                    if (to_remove[i].Count > 0) {
+                        remove_at_indices(shots_list[i], to_remove[1]);
+                    }
+                }
+            }
         }
 
         if (true) {
-            List<List<int>> to_remove = check_for_shots_asteroids_collision();
+            List<int> to_remove = validate_asteroids_position();
+            remove_at_indices(asteroid_list, to_remove);
+        }
+
+        if (true) {
+            List<List<int>> to_remove = check_for_shots_shots_collision();
+            if (to_remove.Count > 0) {
+                for (int i = 0; i < to_remove.Count; i++) {
+                    if (to_remove[i].Count > 0) {
+                        remove_at_indices(shots_list[i], to_remove[i]);
+                    }
+                }
+            }
+        }
+
+        if (true) {
+            List<List<int>> to_remove = check_for_shots_asteroids_collision(); // needs rework
+            if (to_remove.Count > 2) {
+                for (int i = 0; i < to_remove.Count - 1; i++) {
+                    if (to_remove[i + 1].Count > 0) {
+                        remove_at_indices(shots_list[i], to_remove[i + 1]);
+                    }
+                }
+            }
             if (to_remove.Count > 0) {
                 if (to_remove[0].Count > 0) {
-                    remove_at_indices(shots_list, to_remove[0]);
-                }
-                if (to_remove[1].Count > 0) {
-                    remove_at_indices(asteroid_list, to_remove[1]);
+                    remove_at_indices(asteroid_list, to_remove[0]);
                 }
             }
         }
@@ -151,18 +165,20 @@ public class Asteroids : Game {
                 0f
             );
         }
-        foreach (Entity shot in shots_list) {
-            _spriteBatch.Draw(
-                shot.sprite,
-                shot.position,
-                null,
-                Color.White,
-                shot.rotation,
-                new Vector2(shot.sprite.Width / 2, shot.sprite.Height / 2),
-                Vector2.One,
-                SpriteEffects.None,
-                0f
-            );
+        foreach (List<Entity> shots in shots_list) {
+            foreach (Entity shot in shots) {
+                _spriteBatch.Draw(
+                    shot.sprite,
+                    shot.position,
+                    null,
+                    Color.White,
+                    shot.rotation,
+                    new Vector2(shot.sprite.Width / 2, shot.sprite.Height / 2),
+                    Vector2.One,
+                    SpriteEffects.None,
+                    0f
+                );
+            }
         }
         _spriteBatch.End();
 
@@ -257,7 +273,7 @@ public class Asteroids : Game {
 
                 collision_list = [2],
             };
-            shots_list.Add(shot);
+            shots_list[0].Add(shot);
         }
         if (mode == 1 || mode == 2) {
             Entity shot = new() {
@@ -275,21 +291,16 @@ public class Asteroids : Game {
 
                 collision_list = [2],
             };
-            shots_list.Add(shot);
+            shots_list[1].Add(shot);
         }
     }
 
 
     public bool is_collision(Entity e1, Entity e2, float tolerance=10f) {
-        // foreach (int c in e1.collision_list) {
-        //     if (e2.collision_list.Contains(c)) {
-                float distance = Vector2.Distance(e1.position, e2.position);
-                float e1_radius = e1.sprite.Width / 2 * (1 - tolerance / 100);
-                float e2_radius = e2.sprite.Width / 2 * (1 - tolerance / 100);;
-                return distance < (e1_radius + e2_radius);
-        //     }
-        // }
-        // return false;
+        float distance = Vector2.Distance(e1.position, e2.position);
+        float e1_radius = e1.sprite.Width / 2 * (1 - tolerance / 100);
+        float e2_radius = e2.sprite.Width / 2 * (1 - tolerance / 100);;
+        return distance < (e1_radius + e2_radius);
     }
 
     public void remove_at_indices(List<Entity> entities, List<int> indices) {
@@ -407,12 +418,14 @@ public class Asteroids : Game {
 
     public void update_shots(GameTime gameTime) {
         for (int i = 0; i < shots_list.Count; i++) {
-            shots_list[i].velocity = new Vector2(
-                shots_list[i].speed * shots_list[i].speed_multiplier * (float)gameTime.ElapsedGameTime.TotalSeconds * (float)Math.Sin(shots_list[i].rotation),
-                -1 * shots_list[i].speed * shots_list[i].speed_multiplier * (float)gameTime.ElapsedGameTime.TotalSeconds * (float)Math.Cos(shots_list[i].rotation)
-            );
+            for (int j = 0; j < shots_list[i].Count; j++) {
+                shots_list[i][j].velocity = new Vector2(
+                    shots_list[i][j].speed * shots_list[i][j].speed_multiplier * (float)gameTime.ElapsedGameTime.TotalSeconds * (float)Math.Sin(shots_list[i][j].rotation),
+                    -1 * shots_list[i][j].speed * shots_list[i][j].speed_multiplier * (float)gameTime.ElapsedGameTime.TotalSeconds * (float)Math.Cos(shots_list[i][j].rotation)
+                );
 
-            shots_list[i].position += shots_list[i].velocity;
+                shots_list[i][j].position += shots_list[i][j].velocity;
+            }
         }
     }
 
@@ -428,14 +441,16 @@ public class Asteroids : Game {
     }
 
 
-    public List<int> validate_shots_position() {
-        List<int> to_remove = [];
-        for (int i = shots_list.Count - 1; i >= 0; i--) {
-            if (
-                shots_list[i].position.X < 0 - (shots_list[i].sprite.Width / 2) || shots_list[i].position.X > _graphics.PreferredBackBufferWidth + (shots_list[i].sprite.Width / 2) ||
-                shots_list[i].position.Y < 0 - (shots_list[i].sprite.Height / 2) || shots_list[i].position.Y > _graphics.PreferredBackBufferHeight + (shots_list[i].sprite.Height / 2)
-                ) {
-                to_remove.Add(i);
+    public List<List<int>> validate_shots_position() {
+        List<List<int>> to_remove = [[], []];
+        for (int i = 0; i < shots_list.Count; i++) {
+            for (int j = shots_list[i].Count - 1; j >= 0; j--) {
+                if (
+                    shots_list[i][j].position.X < 0 - (shots_list[i][j].sprite.Width / 2) || shots_list[i][j].position.X > _graphics.PreferredBackBufferWidth + (shots_list[i][j].sprite.Width / 2) ||
+                    shots_list[i][j].position.Y < 0 - (shots_list[i][j].sprite.Height / 2) || shots_list[i][j].position.Y > _graphics.PreferredBackBufferHeight + (shots_list[i][j].sprite.Height / 2)
+                    ) {
+                    to_remove[i].Add(j);
+                }
             }
         }
 
@@ -457,29 +472,41 @@ public class Asteroids : Game {
     }
 
 
-    public List<int> check_for_shots_shots_collision() {
-        HashSet<int> to_remove_set = [];
-        for (int i = shots_list.Count - 1; i >= 0; i--) {
-            for (int j = i - 1; j >= 0; j--) {
-                if (is_collision(shots_list[i], shots_list[j])) {
-                    to_remove_set.Add(i);
-                    to_remove_set.Add(j);
-                    break;
+    public List<List<int>> check_for_shots_shots_collision() { // needs rework
+        List<List<int>> to_remove = [[], []];
+        for (int i = 0; i < shots_list.Count; i++) {
+            for (int l = i - 1; l >= 0; l--) {
+                for (int j = shots_list[i].Count - 1; j >= 0; j--) {
+                    for (int k = j - 1; k >= 0; k--) {
+                        // if (to_remove[i].Contains(j) || to_remove[i].Contains(l)) {
+                        //     continue;
+                        // }
+                        if (is_collision(shots_list[l][j], shots_list[l][k])) {
+                            to_remove[l].Add(j);
+                            to_remove[l].Add(k);
+                            break;
+                        }
+                    }
                 }
             }
         }
         
-        return [.. to_remove_set];
+        return to_remove;
     }
 
     public List<List<int>> check_for_shots_asteroids_collision() {
-        List<List<int>> to_remove = [[], []];
-        for (int i = shots_list.Count - 1; i >= 0; i--) {
-            for (int j = asteroid_list.Count - 1; j >= 0; j--) {
-                if (is_collision(shots_list[i], asteroid_list[j])) {
-                    to_remove[0].Add(i);
-                    to_remove[1].Add(j);
-                    break;
+        List<List<int>> to_remove = [[], [], []];
+        for (int i = 0; i < shots_list.Count; i++) {
+            for (int j = shots_list[i].Count - 1; j >= 0; j--) {
+                for (int l = asteroid_list.Count - 1; l >= 0; l--) {
+                    if (to_remove[0].Contains(l)) {
+                        continue;
+                    }
+                    if (is_collision(shots_list[i][j], asteroid_list[l])) {
+                        to_remove[i + 1].Add(j);
+                        to_remove[0].Add(l);
+                        break;
+                    }
                 }
             }
         }
