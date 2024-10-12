@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Asteroids;
 
@@ -76,15 +77,11 @@ public class Asteroids : Game {
         update_shots(gameTime);
         update_asteroids(gameTime);
 
-        // ocassional crash when both shot and asteroid exists
-
         if (true) {
             List<List<int>> to_remove = validate_shots_position();
             if (to_remove.Count > 0) {
                 for (int i = 0; i < to_remove.Count; i++) {
-                    if (to_remove[i].Count > 0) {
-                        remove_at_indices(shots_list[i], to_remove[1]);
-                    }
+                    remove_at_indices(shots_list[i], to_remove[1]);
                 }
             }
         }
@@ -97,10 +94,8 @@ public class Asteroids : Game {
         if (true) {
             List<List<int>> to_remove = check_for_shots_shots_collision();
             if (to_remove.Count > 0) {
-                for (int i = 0; i < to_remove.Count; i++) {
-                    if (to_remove[i].Count > 0) {
-                        remove_at_indices(shots_list[i], to_remove[i]);
-                    }
+                for (int i = 0; i < shots_list.Count; i++) {
+                    remove_at_indices(shots_list[i], to_remove[i]); // crash on shoot
                 }
             }
         }
@@ -123,7 +118,7 @@ public class Asteroids : Game {
 
         if (true) {
             List<int> to_remove = check_for_spaceship_asteroids_collision();
-            // if (to_remove.Count > 0) {
+            // if (to_remove.Count > 0) { // move spaceship to spawn position
             //     spaceship.position = new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2) - new Vector2(spaceship.sprite.Width / 2, spaceship.sprite.Height / 2);
             // }
             remove_at_indices(asteroid_list, to_remove);
@@ -304,7 +299,7 @@ public class Asteroids : Game {
     }
 
     public void remove_at_indices(List<Entity> entities, List<int> indices) {
-        if (entities.Count == 0) {
+        if (entities.Count == 0 || indices.Count == 0) {
             return;
         }
 
@@ -442,7 +437,10 @@ public class Asteroids : Game {
 
 
     public List<List<int>> validate_shots_position() {
-        List<List<int>> to_remove = [[], []];
+        List<List<int>> to_remove = [];
+        for (int i = 0; i < shots_list.Count; i++) {
+            to_remove.Add([]);
+        }
         for (int i = 0; i < shots_list.Count; i++) {
             for (int j = shots_list[i].Count - 1; j >= 0; j--) {
                 if (
@@ -472,18 +470,21 @@ public class Asteroids : Game {
     }
 
 
-    public List<List<int>> check_for_shots_shots_collision() { // needs rework
-        List<List<int>> to_remove = [[], []];
+    public List<List<int>> check_for_shots_shots_collision() {
+        List<HashSet<int>> to_remove = []; // use at other list inits as well
         for (int i = 0; i < shots_list.Count; i++) {
-            for (int l = i - 1; l >= 0; l--) {
-                for (int j = shots_list[i].Count - 1; j >= 0; j--) {
-                    for (int k = j - 1; k >= 0; k--) {
-                        // if (to_remove[i].Contains(j) || to_remove[i].Contains(l)) {
-                        //     continue;
-                        // }
-                        if (is_collision(shots_list[l][j], shots_list[l][k])) {
-                            to_remove[l].Add(j);
-                            to_remove[l].Add(k);
+            to_remove.Add([]);
+        }
+        for (int i = 0; i < shots_list.Count; i++) {
+            for (int j = 0; j < shots_list.Count; j++) {
+                for (int l = shots_list[i].Count - 1; l >= 0; l--) {
+                    for (int k = shots_list[j].Count - 1; k >= 0; k--) {
+                        if (to_remove[i].Contains(l) || to_remove[j].Contains(k) || l == k) {
+                            continue;
+                        }
+                        if (is_collision(shots_list[i][l], shots_list[j][k])) {
+                            to_remove[i].Add(l);
+                            to_remove[j].Add(k);
                             break;
                         }
                     }
@@ -491,11 +492,14 @@ public class Asteroids : Game {
             }
         }
         
-        return to_remove;
+        return to_remove.Select(hashSet => hashSet.ToList()).ToList();
     }
 
     public List<List<int>> check_for_shots_asteroids_collision() {
-        List<List<int>> to_remove = [[], [], []];
+        List<List<int>> to_remove = [];
+        for (int i = 0; i < shots_list.Count + 1; i++) {
+            to_remove.Add([]);
+        }
         for (int i = 0; i < shots_list.Count; i++) {
             for (int j = shots_list[i].Count - 1; j >= 0; j--) {
                 for (int l = asteroid_list.Count - 1; l >= 0; l--) {
