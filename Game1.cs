@@ -41,13 +41,17 @@ public class Asteroids : Game {
         public List<int> collision_list;
     }
     
-    // readonly static int gun_count = 2;
+    readonly static int gun_count = 2;
     
     readonly Entity spaceship = new();
-    readonly List<List<Entity>> shots_list = [[], []];
+    readonly List<List<Entity>> shots_list = [];
     readonly List<Entity> asteroid_list = [];
 
     protected override void Initialize() {
+        for (int i = 0; i < gun_count; i++) {
+            shots_list.Add([]);
+        }
+
         init_spaceship();
 
         base.Initialize();
@@ -60,7 +64,7 @@ public class Asteroids : Game {
     float shoot_cooldown_ms = 100f;
     float time_of_last_shoot = 0f;
 
-    float spawn_cooldown_ms = 0f;
+    float spawn_cooldown_ms = 100f;
     float time_of_last_spawn = 0f;
 
     float despawn_cooldown_ms = 0f;
@@ -95,7 +99,7 @@ public class Asteroids : Game {
             List<List<int>> to_remove = check_for_shots_shots_collision();
             if (to_remove.Count > 0) {
                 for (int i = 0; i < shots_list.Count; i++) {
-                    remove_at_indices(shots_list[i], to_remove[i]); // crash on shoot
+                    remove_at_indices(shots_list[i], to_remove[i]);
                 }
             }
         }
@@ -199,6 +203,45 @@ public class Asteroids : Game {
         spaceship.rotate_speed_multiplier = 1f;
 
         spaceship.collision_list = [1];
+    }
+
+
+    private void spawn_asteroid() {
+        Random random = new Random();
+        Texture2D sprite_temp = Content.Load<Texture2D>("asteroid_1_1");
+        float ran_w_temp = (float)random.NextDouble();
+        float ran_h_temp = (float)random.NextDouble();
+        if (random.Next(2) == 0) {
+            ran_w_temp = (int)Math.Round(ran_w_temp);
+        } else {
+            ran_h_temp = (int)Math.Round(ran_h_temp);
+        }
+        Vector2 position_temp = new Vector2(
+            GraphicsDevice.Viewport.Width * ran_w_temp + (sprite_temp.Width * ((float)Math.Round(ran_w_temp) * 2 - 1)) + 25 * (random.Next(2) * 2 - 1),
+            GraphicsDevice.Viewport.Height * ran_h_temp + (sprite_temp.Height * ((float)Math.Round(ran_h_temp) * 2 - 1)) + 25 * (random.Next(2) * 2 - 1)
+        );
+
+        Vector2 direction = spaceship.position - position_temp;
+        float mag = (float)Math.Sqrt(Math.Pow(direction.X, 2) + Math.Pow(direction.Y, 2));
+        Vector2 norm_direction = new Vector2(direction.X / mag, direction.Y / mag);
+
+        Entity asteroid = new() {
+            sprite = sprite_temp,
+            origin = new Vector2(sprite_temp.Width / 2, sprite_temp.Height / 2),
+            position = position_temp,
+            direction = norm_direction,
+
+            speed = random.Next(1,51),
+            speed_multiplier = 1f,
+            velocity = new Vector2(0,0),
+
+            rotation = random.Next(0, (int)(Math.PI * 2 * 1000)) / 1000,
+            rotate_speed = random.Next(60) * 2 - 60,
+            rotate_speed_multiplier = 1f,
+
+            collision_list = [1,2],
+        };
+        asteroid_list.Add(asteroid);
     }
 
 
@@ -354,7 +397,8 @@ public class Asteroids : Game {
 
         if (kstate.IsKeyDown(Keys.W) && time_of_last_spawn < game_time_ms - spawn_cooldown_ms) { // spawn asteroids
             time_of_last_spawn = game_time_ms;
-            create_asteroid();
+            // create_asteroid();
+            spawn_asteroid();
         }
 
         if (kstate.IsKeyDown(Keys.Q) && time_of_last_despawn < game_time_ms - despawn_cooldown_ms) { // despawn asteroids
