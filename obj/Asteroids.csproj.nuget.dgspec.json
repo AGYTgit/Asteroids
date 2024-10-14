@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\bubon\\OneDrive\\Documents\\GitHub\\Automatic Uploading\\Asteroids\\Asteroids.csproj": {}
+    "C:\\Users\\bubon\\OneDrive\\Documents\\GitHub\\Asteroids\\Asteroids.csproj": {}
   },
   "projects": {
-    "C:\\Users\\bubon\\OneDrive\\Documents\\GitHub\\Automatic Uploading\\Asteroids\\Asteroids.csproj": {
+    "C:\\Users\\bubon\\OneDrive\\Documents\\GitHub\\Asteroids\\Asteroids.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\bubon\\OneDrive\\Documents\\GitHub\\Automatic Uploading\\Asteroids\\Asteroids.csproj",
+        "projectUniqueName": "C:\\Users\\bubon\\OneDrive\\Documents\\GitHub\\Asteroids\\Asteroids.csproj",
         "projectName": "Asteroids",
-        "projectPath": "C:\\Users\\bubon\\OneDrive\\Documents\\GitHub\\Automatic Uploading\\Asteroids\\Asteroids.csproj",
+        "projectPath": "C:\\Users\\bubon\\OneDrive\\Documents\\GitHub\\Asteroids\\Asteroids.csproj",
         "packagesPath": "C:\\Users\\bubon\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\bubon\\OneDrive\\Documents\\GitHub\\Automatic Uploading\\Asteroids\\obj\\",
+        "outputPath": "C:\\Users\\bubon\\OneDrive\\Documents\\GitHub\\Asteroids\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
