@@ -4,10 +4,10 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/bubon/OneDrive/Documents/GitHub/Automatic Uploading/Asteroids/Content/asteroid_1_1.png</File>
-    <File>C:/Users/bubon/OneDrive/Documents/GitHub/Automatic Uploading/Asteroids/Content/asteroid_1_2.png</File>
-    <File>C:/Users/bubon/OneDrive/Documents/GitHub/Automatic Uploading/Asteroids/Content/shot_1_1.png</File>
-    <File>C:/Users/bubon/OneDrive/Documents/GitHub/Automatic Uploading/Asteroids/Content/shot_1_2.png</File>
+    <File>C:/Users/bubon/OneDrive/Documents/GitHub/Automatic Uploading/Asteroids/Content/asteroid_1.png</File>
+    <File>C:/Users/bubon/OneDrive/Documents/GitHub/Automatic Uploading/Asteroids/Content/railgun_left.png</File>
+    <File>C:/Users/bubon/OneDrive/Documents/GitHub/Automatic Uploading/Asteroids/Content/railgun_right.png</File>
+    <File>C:/Users/bubon/OneDrive/Documents/GitHub/Automatic Uploading/Asteroids/Content/shot.png</File>
     <File>C:/Users/bubon/OneDrive/Documents/GitHub/Automatic Uploading/Asteroids/Content/spaceship.png</File>
   </SourceFiles>
   <DestFiles>

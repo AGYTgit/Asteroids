@@ -243,8 +243,8 @@ public class Asteroids : Game {
         float target_angle = MathF.Atan2(direction.Y, direction.X);
         float angle_diff = target_angle + (float)(Math.PI / 2) - spaceship.rotation;
 
-        Texture2D sprite_left_temp = Content.Load<Texture2D>("railgun_left_1_1");
-        Texture2D sprite_right_temp = Content.Load<Texture2D>("railgun_right_1_1");
+        Texture2D sprite_left_temp = Content.Load<Texture2D>("railgun_left");
+        Texture2D sprite_right_temp = Content.Load<Texture2D>("railgun_right");
 
         gun_left.sprite = sprite_left_temp;
         gun_left.origin = new Vector2(sprite_left_temp.Width / 2, sprite_left_temp.Height / 2);
@@ -268,7 +268,7 @@ public class Asteroids : Game {
 
     private void spawn_asteroid() {
         Random random = new Random();
-        Texture2D sprite_temp = Content.Load<Texture2D>("asteroid_1_1");
+        Texture2D sprite_temp = Content.Load<Texture2D>("asteroid_1");
         float ran_w_temp = (float)random.NextDouble();
         float ran_h_temp = (float)random.NextDouble();
         if (random.Next(2) == 0) {
@@ -307,7 +307,7 @@ public class Asteroids : Game {
 
     private void create_asteroid() {
         Random random = new Random();
-        Texture2D sprite_temp = Content.Load<Texture2D>("asteroid_1_1");
+        Texture2D sprite_temp = Content.Load<Texture2D>("asteroid_1");
         float direction_X_temp = random.Next(2000) / 1000 * 2 - 1;
         float direction_Y_temp = (1 - direction_X_temp) * random.Next(2) * 2 - 1;
         Entity asteroid = new() {
@@ -353,7 +353,7 @@ public class Asteroids : Game {
         float target_angle = MathF.Atan2(direction.Y, direction.X);
         float angle_diff = target_angle + (float)(Math.PI / 2) - spaceship.rotation;
 
-        Texture2D sprite_temp = Content.Load<Texture2D>("shot_1_1");
+        Texture2D sprite_temp = Content.Load<Texture2D>("shot");
 
         if (mode == 0 || mode == 2) {
             Entity shot = new() {
@@ -674,4 +674,5 @@ public class Asteroids : Game {
 
         return to_remove;
     }
+
 }
