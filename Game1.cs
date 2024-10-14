@@ -44,15 +44,19 @@ public class Asteroids : Game {
     readonly static int gun_count = 2;
     
     readonly Entity spaceship = new();
+
+    readonly Entity gun_left = new();
+    readonly Entity gun_right = new();
     readonly List<List<Entity>> shots_list = [];
     readonly List<Entity> asteroid_list = [];
 
     protected override void Initialize() {
+        init_spaceship();
+        init_guns();
+
         for (int i = 0; i < gun_count; i++) {
             shots_list.Add([]);
         }
-
-        init_spaceship();
 
         base.Initialize();
     }
@@ -78,6 +82,7 @@ public class Asteroids : Game {
         update_from_input(game_time_ms);
 
         update_spaceship(gameTime);
+        update_guns(gameTime);
         update_shots(gameTime);
         update_asteroids(gameTime);
 
@@ -164,6 +169,28 @@ public class Asteroids : Game {
                 0f
             );
         }
+        _spriteBatch.Draw(
+            gun_left.sprite,
+            gun_left.position,
+            null,
+            Color.White,
+            gun_left.rotation,
+            new Vector2(gun_left.sprite.Width / 2, gun_left.sprite.Height / 2),
+            Vector2.One,
+            SpriteEffects.None,
+            0f
+        );
+        _spriteBatch.Draw(
+            gun_right.sprite,
+            gun_right.position,
+            null,
+            Color.White,
+            gun_right.rotation,
+            new Vector2(gun_right.sprite.Width / 2, gun_right.sprite.Height / 2),
+            Vector2.One,
+            SpriteEffects.None,
+            0f
+        );
         foreach (List<Entity> shots in shots_list) {
             foreach (Entity shot in shots) {
                 _spriteBatch.Draw(
@@ -203,6 +230,39 @@ public class Asteroids : Game {
         spaceship.rotate_speed_multiplier = 1f;
 
         spaceship.collision_list = [1];
+    }
+
+    private void init_guns() {
+        Vector2 gun_position_offset = new(
+            -13f * (float)Math.Cos(spaceship.rotation),
+            -10f * (float)Math.Sin(spaceship.rotation)
+        );
+
+        Vector2 mouse_position = new Vector2(Mouse.GetState().Position.X, Mouse.GetState().Position.Y);
+        Vector2 direction = mouse_position - spaceship.position + gun_position_offset;
+        float target_angle = MathF.Atan2(direction.Y, direction.X);
+        float angle_diff = target_angle + (float)(Math.PI / 2) - spaceship.rotation;
+
+        Texture2D sprite_left_temp = Content.Load<Texture2D>("railgun_left_1_1");
+        Texture2D sprite_right_temp = Content.Load<Texture2D>("railgun_right_1_1");
+
+        gun_left.sprite = sprite_left_temp;
+        gun_left.origin = new Vector2(sprite_left_temp.Width / 2, sprite_left_temp.Height / 2);
+        gun_left.position = spaceship.position + gun_position_offset;
+
+
+        gun_left.rotation = spaceship.rotation - angle_diff;
+
+        gun_left.collision_list = [2];
+
+
+        gun_right.sprite = sprite_right_temp;
+        gun_right.origin = new Vector2(sprite_right_temp.Width / 2, sprite_right_temp.Height / 2);
+        gun_right.position = spaceship.position - gun_position_offset;
+
+        gun_right.rotation = spaceship.rotation + angle_diff;
+
+        gun_right.collision_list = [2];
     }
 
 
@@ -334,10 +394,10 @@ public class Asteroids : Game {
     }
 
 
-    public bool is_collision(Entity e1, Entity e2, float tolerance=10f) {
+    public bool is_collision(Entity e1, Entity e2, float miltiplier=1f) {
         float distance = Vector2.Distance(e1.position, e2.position);
-        float e1_radius = e1.sprite.Width / 2 * (1 - tolerance / 100);
-        float e2_radius = e2.sprite.Width / 2 * (1 - tolerance / 100);;
+        float e1_radius = e1.sprite.Width / 2 * miltiplier;
+        float e2_radius = e2.sprite.Width / 2 * miltiplier;
         return distance < (e1_radius + e2_radius);
     }
 
@@ -455,6 +515,24 @@ public class Asteroids : Game {
         }
     }
 
+    public void update_guns(GameTime gameTime) {
+        Vector2 gun_position_offset = new(
+            -13f * (float)Math.Cos(spaceship.rotation),
+            -10f * (float)Math.Sin(spaceship.rotation)
+        );
+
+        Vector2 mouse_position = new Vector2(Mouse.GetState().Position.X, Mouse.GetState().Position.Y);
+        Vector2 direction = mouse_position - spaceship.position + gun_position_offset;
+        float target_angle = MathF.Atan2(direction.Y, direction.X);
+        float angle_diff = target_angle + (float)(Math.PI / 2) - spaceship.rotation;
+
+        gun_left.position = spaceship.position + gun_position_offset;
+        gun_left.rotation = spaceship.rotation - angle_diff;
+
+        gun_right.position = spaceship.position - gun_position_offset;
+        gun_right.rotation = spaceship.rotation + angle_diff;
+    }
+
     public void update_shots(GameTime gameTime) {
         for (int i = 0; i < shots_list.Count; i++) {
             for (int j = 0; j < shots_list[i].Count; j++) {
@@ -515,7 +593,7 @@ public class Asteroids : Game {
 
 
     public List<List<int>> check_for_shots_shots_collision() {
-        List<HashSet<int>> to_remove = []; // use at other list inits as well
+        List<HashSet<int>> to_remove = [];
         for (int i = 0; i < shots_list.Count; i++) {
             to_remove.Add([]);
         }
@@ -596,5 +674,4 @@ public class Asteroids : Game {
 
         return to_remove;
     }
-
 }
