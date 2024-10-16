@@ -1,6 +1,8 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
 "C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/asteroid_1.png","C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/bin/DesktopGL/Content/asteroid_1.xnb","TextureProcessor","Texture2DContent",3942,5205,0.0972519
-"C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/railgun_left.png","C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/bin/DesktopGL/Content/railgun_left.xnb","TextureProcessor","Texture2DContent",156,421,0.0021242
-"C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/railgun_right.png","C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/bin/DesktopGL/Content/railgun_right.xnb","TextureProcessor","Texture2DContent",155,421,0.0024819
+"C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/minigun.png","C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/bin/DesktopGL/Content/minigun.xnb","TextureProcessor","Texture2DContent",200,597,0.0935679
+"C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/mouse_cross.png","C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/bin/DesktopGL/Content/mouse_cross.xnb","TextureProcessor","Texture2DContent",185,1685,0.0935626
 "C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/shot.png","C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/bin/DesktopGL/Content/shot.xnb","TextureProcessor","Texture2DContent",103,213,0.0011907
 "C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/spaceship.png","C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/bin/DesktopGL/Content/spaceship.xnb","TextureProcessor","Texture2DContent",617,4181,0.001911
+"C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/ss_cross_2.png","C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/bin/DesktopGL/Content/ss_cross_2.xnb","TextureProcessor","Texture2DContent",127,1685,0.004609
+"C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/ss_cross.png","C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/bin/DesktopGL/Content/ss_cross.xnb","TextureProcessor","Texture2DContent",124,1685,0.0031883

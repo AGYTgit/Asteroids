@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/railgun_right.png</SourceFile>
-  <SourceTime>2024-10-14T16:41:45.3950392+02:00</SourceTime>
-  <DestFile>C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/bin/DesktopGL/Content/railgun_right.xnb</DestFile>
-  <DestTime>2024-10-14T17:06:57.7355256+02:00</DestTime>
+  <SourceFile>C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/minigun.png</SourceFile>
+  <SourceTime>2024-10-16T13:32:30.2371502+02:00</SourceTime>
+  <DestFile>C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/bin/DesktopGL/Content/minigun.xnb</DestFile>
+  <DestTime>2024-10-16T13:34:01.625795+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2024-08-16T19:05:56+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

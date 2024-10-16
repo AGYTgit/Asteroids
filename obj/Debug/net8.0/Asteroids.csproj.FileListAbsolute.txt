@@ -59,8 +59,6 @@ C:\Users\bubon\OneDrive\Documents\GitHub\Automatic Uploading\Asteroids\bin\Debug
 C:\Users\bubon\OneDrive\Documents\GitHub\Automatic Uploading\Asteroids\bin\Debug\net8.0\Content\railgun_right.xnb
 C:\Users\bubon\OneDrive\Documents\GitHub\Automatic Uploading\Asteroids\bin\Debug\net8.0\Content\shot.xnb
 C:\Users\bubon\OneDrive\Documents\GitHub\Asteroids\bin\Debug\net8.0\Content\asteroid_1.xnb
-C:\Users\bubon\OneDrive\Documents\GitHub\Asteroids\bin\Debug\net8.0\Content\railgun_left.xnb
-C:\Users\bubon\OneDrive\Documents\GitHub\Asteroids\bin\Debug\net8.0\Content\railgun_right.xnb
 C:\Users\bubon\OneDrive\Documents\GitHub\Asteroids\bin\Debug\net8.0\Content\shot.xnb
 C:\Users\bubon\OneDrive\Documents\GitHub\Asteroids\bin\Debug\net8.0\Content\spaceship.xnb
 C:\Users\bubon\OneDrive\Documents\GitHub\Asteroids\bin\Debug\net8.0\Asteroids.exe
@@ -89,3 +87,7 @@ C:\Users\bubon\OneDrive\Documents\GitHub\Asteroids\obj\Debug\net8.0\refint\Aster
 C:\Users\bubon\OneDrive\Documents\GitHub\Asteroids\obj\Debug\net8.0\Asteroids.pdb
 C:\Users\bubon\OneDrive\Documents\GitHub\Asteroids\obj\Debug\net8.0\Asteroids.genruntimeconfig.cache
 C:\Users\bubon\OneDrive\Documents\GitHub\Asteroids\obj\Debug\net8.0\ref\Asteroids.dll
+C:\Users\bubon\OneDrive\Documents\GitHub\Asteroids\bin\Debug\net8.0\Content\minigun.xnb
+C:\Users\bubon\OneDrive\Documents\GitHub\Asteroids\bin\Debug\net8.0\Content\mouse_cross.xnb
+C:\Users\bubon\OneDrive\Documents\GitHub\Asteroids\bin\Debug\net8.0\Content\ss_cross.xnb
+C:\Users\bubon\OneDrive\Documents\GitHub\Asteroids\bin\Debug\net8.0\Content\ss_cross_2.xnb

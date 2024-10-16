@@ -1,0 +1,4 @@
+Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"c:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/../sprites/mouse_cross.png","c:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/bin/DesktopGL/mouse_cross.xnb","TextureProcessor","Texture2DContent",185,1685,0.0956993
+"c:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/../sprites/ss_cross_2.png","c:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/bin/DesktopGL/ss_cross_2.xnb","TextureProcessor","Texture2DContent",127,1685,0.0031102
+"c:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/../sprites/ss_cross.png","c:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/bin/DesktopGL/ss_cross.xnb","TextureProcessor","Texture2DContent",124,1685,0.0018582

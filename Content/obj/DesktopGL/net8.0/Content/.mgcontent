@@ -5,12 +5,16 @@
   <Config />
   <SourceFiles>
     <File>C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/asteroid_1.png</File>
-    <File>C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/railgun_left.png</File>
-    <File>C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/railgun_right.png</File>
+    <File>C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/minigun.png</File>
+    <File>C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/mouse_cross.png</File>
     <File>C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/shot.png</File>
     <File>C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/spaceship.png</File>
+    <File>C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/ss_cross_2.png</File>
+    <File>C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/ss_cross.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
