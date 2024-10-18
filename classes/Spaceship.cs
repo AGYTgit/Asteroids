@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 
 
-public class Spaceship(Texture2D _sprite, Vector2 _position, Gun _gun_left, Gun _gun_right, Cross _cross, float _acceleration=.25f, float _rotation_speed=90f, int _health=10, float _velocity_liniter=75) {
+public class Spaceship(Texture2D _sprite, Vector2 _position, Gun _gun_left, Gun _gun_right, Cross _cross, float _acceleration=.25f, float _rotation_speed=90f, int _health=5, int _shield=5, float _velocity_liniter=75) {
     public Texture2D sprite             { get; }      = _sprite;
     public Rectangle rectangle          { get; }      = _sprite.Bounds;
     public Vector2 origin               { get; }      = new(_sprite.Width / 2, _sprite.Height / 2);
@@ -17,6 +17,7 @@ public class Spaceship(Texture2D _sprite, Vector2 _position, Gun _gun_left, Gun 
     public float rotation_speed         { get; }      = _rotation_speed;
 
     public int health                   { get; set; } = _health;
+    public int shield                   { get; set; } = _shield;
 
     public Gun gun_left                 { get; }      = _gun_left;
     public Gun gun_right                { get; }      = _gun_right;

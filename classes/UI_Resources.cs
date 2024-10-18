@@ -23,44 +23,44 @@ public class UI_Resources(GraphicsDeviceManager _graphics, int _health, int _shi
     public int current_ammo_right   { get; set; } = _ammo_right;
     public int current_boost        { get; set; } = _boost;
 
-    public Texture2D ui_background       { get; set; }
+    public Texture2D ui_background_sprite        { get; set; }
 
-    public List<Texture2D> ui_health     { get; set; } = [];
-    public List<Texture2D> ui_shield     { get; set; } = [];
-    public List<Texture2D> ui_ammo_left  { get; set; } = [];
-    public List<Texture2D> ui_ammo_right { get; set; } = [];
-    public List<Texture2D> ui_boost      { get; set; } = [];
+    public List<Texture2D> ui_health_sprites     { get; set; } = [];
+    public List<Texture2D> ui_shield_sprites     { get; set; } = [];
+    public List<Texture2D> ui_ammo_left_sprites  { get; set; } = [];
+    public List<Texture2D> ui_ammo_right_sprites { get; set; } = [];
+    public List<Texture2D> ui_boost_sprites      { get; set; } = [];
 
 
     public void load_sprites(ContentManager _content) {
-        ui_background = _content.Load<Texture2D>("ui_empty");
+        ui_background_sprite = _content.Load<Texture2D>("ui_empty");
 
-        ui_health.Add(_content.Load<Texture2D>("ui_health_1"));
-        ui_health.Add(_content.Load<Texture2D>("ui_health_2"));
-        ui_health.Add(_content.Load<Texture2D>("ui_health_3"));
-        ui_health.Add(_content.Load<Texture2D>("ui_health_4"));
-        ui_health.Add(_content.Load<Texture2D>("ui_health_5"));
+        ui_health_sprites.Add(_content.Load<Texture2D>("ui_health_1"));
+        ui_health_sprites.Add(_content.Load<Texture2D>("ui_health_2"));
+        ui_health_sprites.Add(_content.Load<Texture2D>("ui_health_3"));
+        ui_health_sprites.Add(_content.Load<Texture2D>("ui_health_4"));
+        ui_health_sprites.Add(_content.Load<Texture2D>("ui_health_5"));
 
-        ui_shield.Add(_content.Load<Texture2D>("ui_shield_1"));
-        ui_shield.Add(_content.Load<Texture2D>("ui_shield_2"));
-        ui_shield.Add(_content.Load<Texture2D>("ui_shield_3"));
-        ui_shield.Add(_content.Load<Texture2D>("ui_shield_4"));
-        ui_shield.Add(_content.Load<Texture2D>("ui_shield_5"));
+        ui_shield_sprites.Add(_content.Load<Texture2D>("ui_shield_1"));
+        ui_shield_sprites.Add(_content.Load<Texture2D>("ui_shield_2"));
+        ui_shield_sprites.Add(_content.Load<Texture2D>("ui_shield_3"));
+        ui_shield_sprites.Add(_content.Load<Texture2D>("ui_shield_4"));
+        ui_shield_sprites.Add(_content.Load<Texture2D>("ui_shield_5"));
 
-        ui_ammo_left.Add(_content.Load<Texture2D>("ui_ammo_left_1"));
-        ui_ammo_left.Add(_content.Load<Texture2D>("ui_ammo_left_2"));
-        ui_ammo_left.Add(_content.Load<Texture2D>("ui_ammo_left_3"));
-        ui_ammo_left.Add(_content.Load<Texture2D>("ui_ammo_left_4"));
-        ui_ammo_left.Add(_content.Load<Texture2D>("ui_ammo_left_5"));
+        ui_ammo_left_sprites.Add(_content.Load<Texture2D>("ui_ammo_left_1"));
+        ui_ammo_left_sprites.Add(_content.Load<Texture2D>("ui_ammo_left_2"));
+        ui_ammo_left_sprites.Add(_content.Load<Texture2D>("ui_ammo_left_3"));
+        ui_ammo_left_sprites.Add(_content.Load<Texture2D>("ui_ammo_left_4"));
+        ui_ammo_left_sprites.Add(_content.Load<Texture2D>("ui_ammo_left_5"));
 
-        ui_ammo_right.Add(_content.Load<Texture2D>("ui_ammo_right_1"));
-        ui_ammo_right.Add(_content.Load<Texture2D>("ui_ammo_right_2"));
-        ui_ammo_right.Add(_content.Load<Texture2D>("ui_ammo_right_3"));
-        ui_ammo_right.Add(_content.Load<Texture2D>("ui_ammo_right_4"));
-        ui_ammo_right.Add(_content.Load<Texture2D>("ui_ammo_right_5"));
+        ui_ammo_right_sprites.Add(_content.Load<Texture2D>("ui_ammo_right_1"));
+        ui_ammo_right_sprites.Add(_content.Load<Texture2D>("ui_ammo_right_2"));
+        ui_ammo_right_sprites.Add(_content.Load<Texture2D>("ui_ammo_right_3"));
+        ui_ammo_right_sprites.Add(_content.Load<Texture2D>("ui_ammo_right_4"));
+        ui_ammo_right_sprites.Add(_content.Load<Texture2D>("ui_ammo_right_5"));
         
-        ui_boost.Add(_content.Load<Texture2D>("ui_booster_1"));
-        ui_boost.Add(_content.Load<Texture2D>("ui_booster_2"));
+        ui_boost_sprites.Add(_content.Load<Texture2D>("ui_booster_1"));
+        ui_boost_sprites.Add(_content.Load<Texture2D>("ui_booster_2"));
     }
 
     public void update_resources(int _health, int _shield, int _ammo_left, int _ammo_right, int _boost) {
@@ -73,41 +73,41 @@ public class UI_Resources(GraphicsDeviceManager _graphics, int _health, int _shi
 
     public void draw(SpriteBatch sprite_batch) {
         sprite_batch.Draw(
-            ui_background,
+            ui_background_sprite,
             position,
             Color.White
         );
         if (current_health > 0) {
             sprite_batch.Draw(
-                ui_health[Mapping.Map(current_health, 0, max_health, 0, 4)],
+                ui_health_sprites[Mapping.Map(current_health, 0, max_health, 0, 4)],
                 position,
                 Color.White
             );
         }
         if (current_shield > 0) {
             sprite_batch.Draw(
-                ui_shield[Mapping.Map(current_shield, 0, max_shield, 0, 4)],
+                ui_shield_sprites[Mapping.Map(current_shield, 0, max_shield, 0, 4)],
                 position,
                 Color.White
             );
         }
         if (current_ammo_left > 0) {
             sprite_batch.Draw(
-                ui_ammo_left[Mapping.Map(current_ammo_left, 0, max_ammo_left, 0, 4)],
+                ui_ammo_left_sprites[Mapping.Map(current_ammo_left, 0, max_ammo_left, 0, 4)],
                 position,
                 Color.White
             );
         }
         if (current_ammo_right > 0) {
             sprite_batch.Draw(
-                ui_ammo_right[Mapping.Map(current_ammo_right, 0, max_ammo_right, 0, 4)],
+                ui_ammo_right_sprites[Mapping.Map(current_ammo_right, 0, max_ammo_right, 0, 4)],
                 position,
                 Color.White
             );
         }
         if (current_boost > 0) {
             sprite_batch.Draw(
-                ui_boost[Mapping.Map(current_boost, 0, max_boost, 0, 1)],
+                ui_boost_sprites[Mapping.Map(current_boost, 0, max_boost, 0, 1)],
                 position,
                 Color.White
             );
