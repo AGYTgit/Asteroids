@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>c:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/../sprites/mouse_cross.png</SourceFile>
-  <SourceTime>2024-10-16T16:59:13.7752591+02:00</SourceTime>
-  <DestFile>c:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/bin/DesktopGL/mouse_cross.xnb</DestFile>
-  <DestTime>2024-10-16T17:04:06.095196+02:00</DestTime>
+  <SourceFile>C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/ui_ammo_right_3.png</SourceFile>
+  <SourceTime>2024-10-18T17:59:42.5528457+02:00</SourceTime>
+  <DestFile>C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/bin/DesktopGL/Content/ui_ammo_right_3.xnb</DestFile>
+  <DestTime>2024-10-18T19:58:49.518376+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2024-08-16T19:05:56+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

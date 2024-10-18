@@ -10,7 +10,7 @@ public class Spaceship(Texture2D _sprite, Vector2 _position, Gun _gun_left, Gun 
     public Vector2 origin               { get; }      = new(_sprite.Width / 2, _sprite.Height / 2);
     
     public Vector2 position             { get; set; } = _position;
-    public Vector2 velocity             { get; set; } = new(0,0);
+    public Vector2 velocity             { get; set; } = Vector2.Zero;
     public Vector2 max_velocity         { get; set; } = new(_velocity_liniter,_velocity_liniter);
     public float rotation               { get; set; } = 0;
     public float acceleration           { get; }      = _acceleration;
@@ -52,8 +52,8 @@ public class Spaceship(Texture2D _sprite, Vector2 _position, Gun _gun_left, Gun 
 
 
         // max_velocity = new Vector2(
-        //     MathF.Abs((max_velocity_default.X * MathF.Cos(rotation)) + (max_velocity_default.Y * MathF.Sin(rotation) * -1)),
-        //     MathF.Abs((max_velocity_default.X * MathF.Sin(rotation)) + (max_velocity_default.Y * MathF.Cos(rotation)))
+        //     MathF.Abs((max_velocity.X * MathF.Cos(rotation)) + (max_velocity.Y * MathF.Sin(rotation) * -1)),
+        //     MathF.Abs((max_velocity.X * MathF.Sin(rotation)) + (max_velocity.Y * MathF.Cos(rotation)))
         // );
 
         if (velocity.X > max_velocity.X) {
@@ -252,4 +252,32 @@ public class Spaceship(Texture2D _sprite, Vector2 _position, Gun _gun_left, Gun 
         );
     }
 
+
+    public void draw_all(SpriteBatch sprite_batch) {
+        draw_guns(sprite_batch);
+        draw_spaceship(sprite_batch);
+    }
+
+    public void draw_spaceship(SpriteBatch sprite_batch) {
+        sprite_batch.Draw(
+            sprite,
+            position,
+            rectangle,
+            Color.White,
+            rotation,
+            origin,
+            Vector2.One,
+            SpriteEffects.None,
+            0f
+        );
+    }
+    public void draw_guns(SpriteBatch sprite_batch) {
+        gun_left.draw(sprite_batch);
+        gun_right.draw(sprite_batch);
+    }
+    public void draw_crosses(SpriteBatch sprite_batch) {
+        gun_left.cross.draw(sprite_batch);
+        // gun_right.cross.draw(sprite_batch);
+        cross.draw(sprite_batch);
+    }
 };

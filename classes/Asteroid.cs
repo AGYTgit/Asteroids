@@ -13,6 +13,20 @@ public class Asteroid(Texture2D _sprite, Vector2 _position, Vector2 _velocity, f
 
     public Vector2 velocity     { get; }      = _velocity;
     public float rotation_speed { get; }      = _rotation_speed;
+
+    public void draw(SpriteBatch sprite_batch) {
+        sprite_batch.Draw(
+            sprite,
+            position,
+            rectangel,
+            Color.White,
+            rotation,
+            origin,
+            Vector2.One,
+            SpriteEffects.None,
+            0f
+        );
+    }
 }
 
 
@@ -94,4 +108,9 @@ public class Asteroid_Spawner(Viewport _viewport, Texture2D _asteroid_sprite, fl
         }
     }
 
+    public void draw(SpriteBatch sprite_batch) {
+        foreach (Asteroid asteroid in asteroid_list) {
+            asteroid.draw(sprite_batch);
+        }
+    }
 }

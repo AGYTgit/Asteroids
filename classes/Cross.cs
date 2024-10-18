@@ -9,4 +9,18 @@ public class Cross(Texture2D _sprite, Vector2 _position) {
     public Vector2 origin   { get; }      = new Vector2(_sprite.Width / 2, _sprite.Height / 2);
     public Vector2 position { get; set; } = _position;
     public float rotation   { get; set; } = 0f;
+
+    public void draw(SpriteBatch sprite_batch) {
+        sprite_batch.Draw(
+            sprite,
+            position,
+            null,
+            Color.White,
+            rotation,
+            origin,
+            Vector2.One,
+            SpriteEffects.None,
+            0f
+        );
+    }
 }

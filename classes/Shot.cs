@@ -16,4 +16,18 @@ public class Shot(Texture2D _sprite, Vector2 _position, float _rotation, float _
                                                     _speed * MathF.Sin(_rotation - MathF.PI / 2)
                                                 );
     public float rotation      { get; }      = _rotation;
+
+    public void draw(SpriteBatch sprite_batch) {
+        sprite_batch.Draw(
+            sprite,
+            position,
+            null,
+            Color.White,
+            rotation,
+            origin,
+            Vector2.One,
+            SpriteEffects.None,
+            0f
+        );
+    }
 }
