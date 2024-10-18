@@ -19,6 +19,7 @@ public class Asteroids : Game {
     
     Spaceship ss;
     Cross mouse_cross;
+    Asteroid_Spawner spawner;
 
     protected override void Initialize() {
         Vector2 start_position = new(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2);
@@ -46,6 +47,9 @@ public class Asteroids : Game {
 
         Texture2D ss_sprite = Content.Load<Texture2D>("spaceship");
         ss = new(ss_sprite, start_position, lg, rg, ss_cross);
+
+        Texture2D spawner_sprite = Content.Load<Texture2D>("asteroid_1");
+        spawner = new(GraphicsDevice.Viewport, spawner_sprite);
 
         base.Initialize();
     }
@@ -99,6 +103,10 @@ public class Asteroids : Game {
         }
 
         ss.update_all(gameTime, mstate);
+
+        spawner.spawn(gameTime, ss.position);
+
+        spawner.update_asteroids(gameTime);
         
         base.Update(gameTime);
     }
@@ -170,6 +178,19 @@ public class Asteroids : Game {
             SpriteEffects.None,
             0f
         );
+        foreach (Asteroid asteroid in spawner.asteroid_list) {
+            _spriteBatch.Draw(
+                asteroid.sprite,
+                asteroid.position,
+                asteroid.rectangel,
+                Color.White,
+                asteroid.rotation,
+                asteroid.origin,
+                Vector2.One,
+                SpriteEffects.None,
+                0f
+            );
+        }
         _spriteBatch.Draw(
             ss.cross.sprite,
             ss.cross.position,
@@ -192,17 +213,17 @@ public class Asteroids : Game {
             SpriteEffects.None,
             0f
         );
-        _spriteBatch.Draw(
-            ss.gun_right.cross.sprite,
-            ss.gun_right.cross.position,
-            null,
-            Color.White,
-            ss.gun_right.cross.rotation,
-            ss.gun_right.cross.origin,
-            Vector2.One,
-            SpriteEffects.None,
-            0f
-        );
+        // _spriteBatch.Draw(
+        //     ss.gun_right.cross.sprite,
+        //     ss.gun_right.cross.position,
+        //     null,
+        //     Color.White,
+        //     ss.gun_right.cross.rotation,
+        //     ss.gun_right.cross.origin,
+        //     Vector2.One,
+        //     SpriteEffects.None,
+        //     0f
+        // );
         _spriteBatch.Draw(
             mouse_cross.sprite,
             mouse_cross.position,

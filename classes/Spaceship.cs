@@ -4,15 +4,14 @@ using Microsoft.Xna.Framework.Input;
 using System;
 
 
-public class Spaceship(Texture2D _sprite, Vector2 _position, Gun _gun_left, Gun _gun_right, Cross _cross, float _acceleration=.25f, float _rotation_speed=90f, int _health=10) {
+public class Spaceship(Texture2D _sprite, Vector2 _position, Gun _gun_left, Gun _gun_right, Cross _cross, float _acceleration=.25f, float _rotation_speed=90f, int _health=10, float _velocity_liniter=75) {
     public Texture2D sprite             { get; }      = _sprite;
     public Rectangle rectangle          { get; }      = _sprite.Bounds;
     public Vector2 origin               { get; }      = new(_sprite.Width / 2, _sprite.Height / 2);
     
     public Vector2 position             { get; set; } = _position;
     public Vector2 velocity             { get; set; } = new(0,0);
-    public Vector2 max_velocity_default { get; }      = new(25,75);
-    public Vector2 max_velocity         { get; set; } = new(75,75);
+    public Vector2 max_velocity         { get; set; } = new(_velocity_liniter,_velocity_liniter);
     public float rotation               { get; set; } = 0;
     public float acceleration           { get; }      = _acceleration;
     public float rotation_speed         { get; }      = _rotation_speed;
