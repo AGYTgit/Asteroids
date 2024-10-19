@@ -24,6 +24,7 @@
     <File>C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/ui_booster_1.png</File>
     <File>C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/ui_booster_2.png</File>
     <File>C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/ui_empty.png</File>
+    <File>C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/ui_exit_button.png</File>
     <File>C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/ui_health_1.png</File>
     <File>C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/ui_health_2.png</File>
     <File>C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/ui_health_3.png</File>
@@ -34,8 +35,11 @@
     <File>C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/ui_shield_3.png</File>
     <File>C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/ui_shield_4.png</File>
     <File>C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/ui_shield_5.png</File>
+    <File>C:/Users/bubon/OneDrive/Documents/GitHub/Asteroids/Content/ui_start_button.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

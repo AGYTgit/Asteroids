@@ -2,11 +2,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Asteroid(Texture2D _sprite, Vector2 _position, Vector2 _velocity, float _rotation, float _rotation_speed) {
     public Texture2D sprite     { get; }      = _sprite;
     public Vector2 origin       { get; }      = new Vector2(_sprite.Width / 2, _sprite.Height / 2);
-    public Rectangle rectangel  { get; }      = _sprite.Bounds;
+    public Rectangle rectangle  { get; set; } = new((int)_position.X, (int)_position.Y, _sprite.Width, _sprite.Height);
 
     public Vector2 position     { get; set; } = _position;
     public float rotation       { get; set; } = _rotation;
@@ -18,7 +19,7 @@ public class Asteroid(Texture2D _sprite, Vector2 _position, Vector2 _velocity, f
         sprite_batch.Draw(
             sprite,
             position,
-            rectangel,
+            null,
             Color.White,
             rotation,
             origin,
@@ -30,7 +31,7 @@ public class Asteroid(Texture2D _sprite, Vector2 _position, Vector2 _velocity, f
 }
 
 
-public class Asteroid_Spawner(Viewport _viewport, Texture2D _asteroid_sprite, float _bottom_speed=25f, float _top_speed=100f, float _top_rotation_speed=MathF.PI, float _angle_randomness=MathF.PI/6, int _spawn_delay=1000) {
+public class Asteroid_Spawner(Viewport _viewport, Texture2D _asteroid_sprite, float _bottom_speed=25f, float _top_speed=100f, float _top_rotation_speed=MathF.PI, float _angle_randomness=MathF.PI/6, int _spawn_delay=100) {
     public Viewport viewport            { get; }      = _viewport;
     public Texture2D asteroid_sprite    { get; }      = _asteroid_sprite;
 
@@ -46,7 +47,7 @@ public class Asteroid_Spawner(Viewport _viewport, Texture2D _asteroid_sprite, fl
 
 
     public void spawn(GameTime gameTime, Vector2 target) {
-        if (gameTime.TotalGameTime.TotalMilliseconds < last_spawn + spawn_delay) {
+        if (gameTime.TotalGameTime.TotalMilliseconds < last_spawn + spawn_delay / (gameTime.TotalGameTime.Seconds + 60) * 60) {
             return;
         }
 
@@ -105,12 +106,45 @@ public class Asteroid_Spawner(Viewport _viewport, Texture2D _asteroid_sprite, fl
         foreach (Asteroid asteroid in asteroid_list) {
             asteroid.position += asteroid.velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
             asteroid.rotation += asteroid.rotation_speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            asteroid.rectangle = new((int)asteroid.position.X, (int)asteroid.position.Y, (int)(asteroid.sprite.Width * .5f), (int)(asteroid.sprite.Height * .5f));
         }
     }
 
     public void draw(SpriteBatch sprite_batch) {
         foreach (Asteroid asteroid in asteroid_list) {
             asteroid.draw(sprite_batch);
+        }
+    }
+
+    public bool check_for_collision(Rectangle rect) {
+        for (int i = asteroid_list.Count - 1; i >= 0; i--) {
+            if (rect.Intersects(asteroid_list[i].rectangle)) {
+                asteroid_list.RemoveAt(i);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void check_for_asteroid_to_asteroid_collision() {
+        HashSet<int> hash_set = [];
+        for (int i = asteroid_list.Count - 1; i >= 0; i--) {
+            for (int j = i - 1; j >= 0; j--) {
+                if (asteroid_list[i].rectangle.Intersects(asteroid_list[j].rectangle)) {
+                    hash_set.Add(i);
+                    hash_set.Add(j);
+                    break;
+                }
+            }
+        }
+
+        List<int> list = hash_set.ToList();
+        list.Sort((a, b) => b.CompareTo(a));
+
+        foreach(int i in list) {
+            asteroid_list.RemoveAt(i);
         }
     }
 }

@@ -114,3 +114,5 @@ C:\Users\bubon\OneDrive\Documents\GitHub\Asteroids\bin\Debug\net8.0\Content\ui_s
 C:\Users\bubon\OneDrive\Documents\GitHub\Asteroids\bin\Debug\net8.0\Content\ui_shield_3.xnb
 C:\Users\bubon\OneDrive\Documents\GitHub\Asteroids\bin\Debug\net8.0\Content\ui_shield_4.xnb
 C:\Users\bubon\OneDrive\Documents\GitHub\Asteroids\bin\Debug\net8.0\Content\ui_shield_5.xnb
+C:\Users\bubon\OneDrive\Documents\GitHub\Asteroids\bin\Debug\net8.0\Content\ui_start_button.xnb
+C:\Users\bubon\OneDrive\Documents\GitHub\Asteroids\bin\Debug\net8.0\Content\ui_exit_button.xnb

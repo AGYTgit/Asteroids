@@ -2,60 +2,121 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Diagnostics;
+using System.Runtime.Intrinsics.X86;
 
 
-public class Spaceship(Texture2D _sprite, Vector2 _position, Gun _gun_left, Gun _gun_right, Cross _cross, float _acceleration=.25f, float _rotation_speed=90f, int _health=5, int _shield=5, float _velocity_liniter=75) {
-    public Texture2D sprite             { get; }      = _sprite;
-    public Rectangle rectangle          { get; }      = _sprite.Bounds;
-    public Vector2 origin               { get; }      = new(_sprite.Width / 2, _sprite.Height / 2);
+public class Spaceship(Texture2D _sprite, Vector2 _position, Gun _gun_left, Gun _gun_right, Cross _cross, float _acceleration=.25f, float _rotation_speed=90f, int _health=5, int _shield=5, long _shield_recharge_delay=15000, int _boost_ch=2, long _boost_recharge_delay=5000, int _boost_duration=250, float _velocity_limiter=75) {
+    public Texture2D sprite    { get; }      = _sprite;
+    public Rectangle rectangle { get; set; } = new((int)_position.X, (int)_position.Y, _sprite.Width, _sprite.Height);
+    public Vector2 origin      { get; }      = new(_sprite.Width / 2, _sprite.Height / 2);
     
-    public Vector2 position             { get; set; } = _position;
-    public Vector2 velocity             { get; set; } = Vector2.Zero;
-    public Vector2 max_velocity         { get; set; } = new(_velocity_liniter,_velocity_liniter);
-    public float rotation               { get; set; } = 0;
-    public float acceleration           { get; }      = _acceleration;
-    public float rotation_speed         { get; }      = _rotation_speed;
+    public Vector2 position     { get; set; } = _position;
+    public Vector2 velocity     { get; set; } = Vector2.Zero;
+    public Vector2 max_velocity { get; set; } = new(_velocity_limiter,_velocity_limiter);
+    public float rotation       { get; set; } = 0;
+    public float acceleration   { get; }      = _acceleration;
+    public float rotation_speed { get; }      = _rotation_speed;
 
-    public int health                   { get; set; } = _health;
-    public int shield                   { get; set; } = _shield;
+    public int max_health   { get; }      = _health;
+    public int max_shield   { get; }      = _shield;
+    public int max_boost_ch { get; }      = _boost_ch;
 
-    public Gun gun_left                 { get; }      = _gun_left;
-    public Gun gun_right                { get; }      = _gun_right;
-    public Cross cross                  { get; }      = _cross;
+    public int health       { get; set; } = _health;
+    public int shield       { get; set; } = _shield;
+    public int boost_ch     { get; set; } = _boost_ch;
+
+    public long damage_taken_time     { get; set; } = 0;
+    public long shield_recharge_delay { get; } = _shield_recharge_delay;
+
+    public long boost_used_time      { get; set; } = 0;
+    public long boost_recharge_delay { get; } = _boost_recharge_delay;
+
+    public int boost_duration        { get; } = _boost_duration;
+
+    public Gun gun_left   { get; }      = _gun_left;
+    public Gun gun_right  { get; }      = _gun_right;
+    public Cross cross    { get; }      = _cross;
+
+    public float score { get; set; } = 0;
 
 
-    public void update_velocity(int mode) {
-        Vector2 downward_velocity = new(
+    public void boost(GameTime gameTime) {
+        Vector2 upward_velocity = new(
+            max_velocity.X * (float)Math.Cos(rotation + MathF.PI / 4) - max_velocity.X * (float)Math.Sin(rotation + MathF.PI / 4),
+            max_velocity.X * (float)Math.Sin(rotation + MathF.PI / 4) + max_velocity.X * (float)Math.Cos(rotation + MathF.PI / 4)
+        );
+
+        if (boost_ch > 0) {
+            velocity = new Vector2(upward_velocity.X * -1, upward_velocity.Y * -1) * 10;
+            boost_ch--;
+            boost_used_time = (long)gameTime.TotalGameTime.TotalMilliseconds;
+        }
+    }
+    public void reload_boost(GameTime gameTime) {
+        if (boost_ch == max_boost_ch) {
+            return;
+        }
+        if (gameTime.TotalGameTime.TotalMilliseconds > boost_used_time + boost_recharge_delay) {
+            boost_ch++;
+            boost_used_time = (long)gameTime.TotalGameTime.TotalMilliseconds;
+        }
+    }
+
+
+    public void take_damage(GameTime gameTime, int damage) {
+        if (shield - damage >= 0) {
+            shield -= damage;
+
+            damage_taken_time = (long)gameTime.TotalGameTime.TotalMilliseconds;
+        } else if (shield > 0) {
+            int damage_split = damage - shield;
+            shield -= damage - damage_split;
+            health -= damage_split;
+
+            damage_taken_time = (long)gameTime.TotalGameTime.TotalMilliseconds;
+        } else {
+            health -= damage;
+        }
+    }
+    public void recharge_shield(GameTime gameTime) {
+        if (shield == max_shield) {
+            return;
+        }
+        if (gameTime.TotalGameTime.TotalMilliseconds > damage_taken_time + shield_recharge_delay) {
+            damage_taken_time = (long)gameTime.TotalGameTime.TotalMilliseconds;
+            shield++;
+        }
+    }
+
+
+    public void update_velocity(GameTime gameTime, int mode) {
+        if (gameTime.TotalGameTime.TotalMilliseconds <= boost_used_time + boost_duration) {
+            return;
+        }
+        
+        Vector2 upward_velocity = new(
             acceleration * (float)Math.Sin(rotation),
             acceleration * (float)Math.Cos(rotation)
         );
 
         switch (mode) {
             case 0: // slow down
-                velocity -= velocity / 200;
+                velocity -= velocity / 300;
                 break;
             case 1: // forward
-                velocity += new Vector2(downward_velocity.X, downward_velocity.Y * -1);
+                velocity += new Vector2(upward_velocity.X, upward_velocity.Y * -1);
                 break;
             case 2: // left
-                velocity += new Vector2(downward_velocity.Y / 2 * -1, downward_velocity.X / 2 * -1);
+                velocity += new Vector2(upward_velocity.Y / 2 * -1, upward_velocity.X / 2 * -1);
                 break;
             case 3: // right
-                velocity += new Vector2(downward_velocity.Y / 2, downward_velocity.X / 2);
+                velocity += new Vector2(upward_velocity.Y / 2, upward_velocity.X / 2);
                 break;
-            case 4: // super speed (space_warp)
-                velocity += max_velocity * 10;
-                break;
-            case 5: // stop (emergency_break)
-                velocity = new Vector2(0, 0);
+            case 5: // stop (emergency break)
+                velocity = Vector2.Zero;
                 break;
         }
-
-
-        // max_velocity = new Vector2(
-        //     MathF.Abs((max_velocity.X * MathF.Cos(rotation)) + (max_velocity.Y * MathF.Sin(rotation) * -1)),
-        //     MathF.Abs((max_velocity.X * MathF.Sin(rotation)) + (max_velocity.Y * MathF.Cos(rotation)))
-        // );
 
         if (velocity.X > max_velocity.X) {
             velocity = new(max_velocity.X, velocity.Y);
@@ -85,10 +146,13 @@ public class Spaceship(Texture2D _sprite, Vector2 _position, Gun _gun_left, Gun 
     }
 
     public void move(GameTime gameTime) {
-        Vector2 velocit_frame = velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
-        position += velocit_frame;
+        position += velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        rectangle = new((int)position.X, (int)position.Y, sprite.Width, sprite.Height);
     }
     public void rotate(GameTime gameTime, MouseState mstate) {
+        if (gameTime.TotalGameTime.TotalMilliseconds <= boost_used_time + boost_duration) {
+            return;
+        }
         Vector2 mouse_position = new Vector2(mstate.Position.X, mstate.Position.Y);
         Vector2 direction = mouse_position - position;
         float target_angle = MathF.Atan2(direction.Y, direction.X);
@@ -175,7 +239,7 @@ public class Spaceship(Texture2D _sprite, Vector2 _position, Gun _gun_left, Gun 
         gun_left.rotation = target_angle_left + MathF.PI / 2;
     }
     public void move_left_gun_shots(GameTime gameTime) {
-        gun_left.move_shots(gameTime, velocity);
+        gun_left.move_shots(gameTime);
     }
 
 
@@ -228,7 +292,7 @@ public class Spaceship(Texture2D _sprite, Vector2 _position, Gun _gun_left, Gun 
         gun_right.rotation = target_angle_right + MathF.PI / 2;
     }
     public void move_right_gun_shots(GameTime gameTime) {
-        gun_right.move_shots(gameTime, velocity);
+        gun_right.move_shots(gameTime);
     }
 
 
@@ -263,7 +327,7 @@ public class Spaceship(Texture2D _sprite, Vector2 _position, Gun _gun_left, Gun 
         sprite_batch.Draw(
             sprite,
             position,
-            rectangle,
+            null,
             Color.White,
             rotation,
             origin,
