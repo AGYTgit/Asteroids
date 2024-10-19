@@ -147,7 +147,7 @@ public class Spaceship(Texture2D _sprite, Vector2 _position, Gun _gun_left, Gun 
 
     public void move(GameTime gameTime) {
         position += velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
-        rectangle = new((int)position.X, (int)position.Y, sprite.Width, sprite.Height);
+        rectangle = new((int)position.X, (int)position.Y, (int)(sprite.Width * .75f), (int)(sprite.Height * .75f));
     }
     public void rotate(GameTime gameTime, MouseState mstate) {
         if (gameTime.TotalGameTime.TotalMilliseconds <= boost_used_time + boost_duration) {

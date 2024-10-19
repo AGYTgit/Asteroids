@@ -107,7 +107,7 @@ public class Asteroid_Spawner(Viewport _viewport, Texture2D _asteroid_sprite, fl
             asteroid.position += asteroid.velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
             asteroid.rotation += asteroid.rotation_speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            asteroid.rectangle = new((int)asteroid.position.X, (int)asteroid.position.Y, (int)(asteroid.sprite.Width * .5f), (int)(asteroid.sprite.Height * .5f));
+            asteroid.rectangle = new((int)asteroid.position.X, (int)asteroid.position.Y, (int)(asteroid.sprite.Width * .75f), (int)(asteroid.sprite.Height * .75f));
         }
     }
 

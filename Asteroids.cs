@@ -152,7 +152,7 @@ public class Asteroids : Game {
                 if (kstate.IsKeyDown(Keys.D) && !emergency_break_button_pressed) {
                     emergency_break_button_pressed = true;
                     ss.update_velocity(gameTime, 5);
-                    ss.take_damage(gameTime, 2);
+                    ss.take_damage(gameTime, 1);
                     moving = true;
                 } else if (!kstate.IsKeyDown(Keys.D) && emergency_break_button_pressed) {
                     emergency_break_button_pressed = false;
@@ -194,7 +194,7 @@ public class Asteroids : Game {
                 );
 
                 if (spawner.check_for_collision(ss.rectangle)) {
-                    ss.take_damage(gameTime, 1);
+                    ss.take_damage(gameTime, 2);
                 }
 
                 for (int i = spawner.asteroid_list.Count - 1; i >= 0 ;i--) {
@@ -202,6 +202,35 @@ public class Asteroids : Game {
                         spawner.asteroid_list.RemoveAt(i);
                     }
                     if (ss.gun_right.check_for_collision(spawner.asteroid_list[i].rectangle)) {
+                        spawner.asteroid_list.RemoveAt(i);
+                    }
+                }
+
+                if (ss.position.X < -100 || ss.position.X > _graphics.PreferredBackBufferWidth + 100 ||
+                    ss.position.Y < -100 || ss.position.Y > _graphics.PreferredBackBufferHeight + 100) {
+                    ss.position = new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2);
+                    ss.take_damage(gameTime, 5);
+                }
+
+                for (int i = ss.gun_left.shots.Count - 1; i >= 0; i--) {
+                    if (ss.gun_left.shots[i].position.X < -100 || ss.gun_left.shots[i].position.X > _graphics.PreferredBackBufferWidth + 100 ||
+                        ss.gun_left.shots[i].position.Y < -100 || ss.gun_left.shots[i].position.Y > _graphics.PreferredBackBufferHeight + 100) {
+                        ss.gun_left.shots[i].position = new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2);
+                        ss.gun_left.shots.RemoveAt(i);
+                    }
+                }
+                for (int i = ss.gun_right.shots.Count - 1; i >= 0; i--) {
+                    if (ss.gun_right.shots[i].position.X < -100 || ss.gun_right.shots[i].position.X > _graphics.PreferredBackBufferWidth + 100 ||
+                        ss.gun_right.shots[i].position.Y < -100 || ss.gun_right.shots[i].position.Y > _graphics.PreferredBackBufferHeight + 100) {
+                        ss.gun_right.shots[i].position = new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2);
+                        ss.gun_right.shots.RemoveAt(i);
+                    }
+                }
+
+                for (int i = spawner.asteroid_list.Count - 1; i >= 0; i--) {
+                    if (spawner.asteroid_list[i].position.X < -100 || spawner.asteroid_list[i].position.X > _graphics.PreferredBackBufferWidth + 100 ||
+                        spawner.asteroid_list[i].position.Y < -100 || spawner.asteroid_list[i].position.Y > _graphics.PreferredBackBufferHeight + 100) {
+                        spawner.asteroid_list[i].position = new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2);
                         spawner.asteroid_list.RemoveAt(i);
                     }
                 }
