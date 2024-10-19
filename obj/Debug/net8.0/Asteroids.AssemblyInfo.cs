@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Asteroids")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2ec1e54aed46e4c456debcb33e50cf94eb6e39cf")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7be352280c593587c892c78239260a50c3a3203d")]
 [assembly: System.Reflection.AssemblyProductAttribute("Asteroids")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Asteroids")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

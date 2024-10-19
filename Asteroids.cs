@@ -23,6 +23,7 @@ public class Asteroids : Game {
     private SpriteBatch _spriteBatch;
 
     private int game_state = 0;
+    private bool can_shoot = false;
     private bool boost_button_pressed = false;
     private bool emergency_break_button_pressed = false;
     
@@ -118,13 +119,17 @@ public class Asteroids : Game {
             case 1: // game
                 if (kstate.IsKeyDown(Keys.Escape)) {
                     game_state = 0;
+                    can_shoot = false;
                     Initialize();
                     LoadContent();
+                    return;
                 }
                 if (ss.health <= 0) {
                     game_state = 0;
+                    can_shoot = false;
                     Initialize();
                     LoadContent();
+                    return;
                 }
 
                 if (ss.gun_left.ammo == 0) {
@@ -172,7 +177,11 @@ public class Asteroids : Game {
                     ss.position = new(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2);
                 }
 
-                if (mstate.LeftButton == ButtonState.Pressed) {
+                if (mstate.LeftButton == ButtonState.Released) {
+                    can_shoot = true;
+                }
+
+                if (mstate.LeftButton == ButtonState.Pressed && can_shoot) {
                     ss.gun_left.shoot(gameTime, ss.velocity);
                 } 
                 if (mstate.RightButton == ButtonState.Pressed) {
@@ -215,14 +224,12 @@ public class Asteroids : Game {
                 for (int i = ss.gun_left.shots.Count - 1; i >= 0; i--) {
                     if (ss.gun_left.shots[i].position.X < -100 || ss.gun_left.shots[i].position.X > _graphics.PreferredBackBufferWidth + 100 ||
                         ss.gun_left.shots[i].position.Y < -100 || ss.gun_left.shots[i].position.Y > _graphics.PreferredBackBufferHeight + 100) {
-                        ss.gun_left.shots[i].position = new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2);
                         ss.gun_left.shots.RemoveAt(i);
                     }
                 }
                 for (int i = ss.gun_right.shots.Count - 1; i >= 0; i--) {
                     if (ss.gun_right.shots[i].position.X < -100 || ss.gun_right.shots[i].position.X > _graphics.PreferredBackBufferWidth + 100 ||
                         ss.gun_right.shots[i].position.Y < -100 || ss.gun_right.shots[i].position.Y > _graphics.PreferredBackBufferHeight + 100) {
-                        ss.gun_right.shots[i].position = new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2);
                         ss.gun_right.shots.RemoveAt(i);
                     }
                 }
@@ -230,7 +237,6 @@ public class Asteroids : Game {
                 for (int i = spawner.asteroid_list.Count - 1; i >= 0; i--) {
                     if (spawner.asteroid_list[i].position.X < -100 || spawner.asteroid_list[i].position.X > _graphics.PreferredBackBufferWidth + 100 ||
                         spawner.asteroid_list[i].position.Y < -100 || spawner.asteroid_list[i].position.Y > _graphics.PreferredBackBufferHeight + 100) {
-                        spawner.asteroid_list[i].position = new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2);
                         spawner.asteroid_list.RemoveAt(i);
                     }
                 }
@@ -272,5 +278,4 @@ public class Asteroids : Game {
 
         base.Draw(gameTime);
     }
-
 }
