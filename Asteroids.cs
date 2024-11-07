@@ -221,25 +221,28 @@ public class Asteroids : Game {
                     ss.take_damage(gameTime, 5);
                 }
 
-                for (int i = ss.gun_left.shots.Count - 1; i >= 0; i--) {
-                    if (ss.gun_left.shots[i].position.X < -100 || ss.gun_left.shots[i].position.X > _graphics.PreferredBackBufferWidth + 100 ||
-                        ss.gun_left.shots[i].position.Y < -100 || ss.gun_left.shots[i].position.Y > _graphics.PreferredBackBufferHeight + 100) {
-                        ss.gun_left.shots.RemoveAt(i);
-                    }
-                }
-                for (int i = ss.gun_right.shots.Count - 1; i >= 0; i--) {
-                    if (ss.gun_right.shots[i].position.X < -100 || ss.gun_right.shots[i].position.X > _graphics.PreferredBackBufferWidth + 100 ||
-                        ss.gun_right.shots[i].position.Y < -100 || ss.gun_right.shots[i].position.Y > _graphics.PreferredBackBufferHeight + 100) {
-                        ss.gun_right.shots.RemoveAt(i);
-                    }
-                }
+                // *************
+                // *** crash ***
+                // *************
+                // for (int i = ss.gun_left.shots.Count - 1; i >= 0; i--) {
+                //     if (ss.gun_left.shots[i].position.X < -100 || ss.gun_left.shots[i].position.X > _graphics.PreferredBackBufferWidth + 100 ||
+                //         ss.gun_left.shots[i].position.Y < -100 || ss.gun_left.shots[i].position.Y > _graphics.PreferredBackBufferHeight + 100) {
+                //         ss.gun_left.shots.RemoveAt(i);
+                //     }
+                // }
+                // for (int i = ss.gun_right.shots.Count - 1; i >= 0; i--) {
+                //     if (ss.gun_right.shots[i].position.X < -100 || ss.gun_right.shots[i].position.X > _graphics.PreferredBackBufferWidth + 100 ||
+                //         ss.gun_right.shots[i].position.Y < -100 || ss.gun_right.shots[i].position.Y > _graphics.PreferredBackBufferHeight + 100) {
+                //         ss.gun_right.shots.RemoveAt(i);
+                //     }
+                // }
 
-                for (int i = spawner.asteroid_list.Count - 1; i >= 0; i--) {
-                    if (spawner.asteroid_list[i].position.X < -100 || spawner.asteroid_list[i].position.X > _graphics.PreferredBackBufferWidth + 100 ||
-                        spawner.asteroid_list[i].position.Y < -100 || spawner.asteroid_list[i].position.Y > _graphics.PreferredBackBufferHeight + 100) {
-                        spawner.asteroid_list.RemoveAt(i);
-                    }
-                }
+                // for (int i = spawner.asteroid_list.Count - 1; i >= 0; i--) {
+                //     if (spawner.asteroid_list[i].position.X < -100 || spawner.asteroid_list[i].position.X > _graphics.PreferredBackBufferWidth + 100 ||
+                //         spawner.asteroid_list[i].position.Y < -100 || spawner.asteroid_list[i].position.Y > _graphics.PreferredBackBufferHeight + 100) {
+                //         spawner.asteroid_list.RemoveAt(i);
+                //     }
+                // }
 
                 // if (ss.gun_left.check_for_collision(ss.rectangle)) { // sometimes instantly collides with ship
                 //     ss.take_damage(gameTime, 3);
